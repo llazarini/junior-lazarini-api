@@ -19,7 +19,7 @@ export default Env.rules({
 	PORT: Env.schema.number(),
 	APP_KEY: Env.schema.string(),
 	APP_NAME: Env.schema.string(),
-  	DRIVE_DISK: Env.schema.enum(['local'] as const),
+	DRIVE_DISK: Env.schema.enum(['local','s3'] as const),
 	NODE_ENV: Env.schema.enum(['development', 'production', 'test'] as const),
 
 	// MySQL
@@ -28,4 +28,12 @@ export default Env.rules({
     MYSQL_USER: Env.schema.string(),
     MYSQL_PASSWORD: Env.schema.string.optional(),
     MYSQL_DB_NAME: Env.schema.string(),
+
+	// S3 Disk
+	S3_KEY: Env.schema.string(),
+	S3_URL: Env.schema.string(),
+    S3_SECRET: Env.schema.string(),
+    S3_BUCKET: Env.schema.string(),
+    S3_REGION: Env.schema.string(),
+    S3_ENDPOINT: Env.schema.string.optional(),
 })

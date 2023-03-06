@@ -6,7 +6,7 @@ import UpdateValidator from 'App/Validators/Leads/UpdateValidator';
 export default class LeadsController {
 
     public async dataprovider({ request, response }: HttpContextContract) {
-        const carTypes = 
+        const carTypes = []
 
         return {
 

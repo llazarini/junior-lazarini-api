@@ -3,31 +3,33 @@ import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
 import Env from '@ioc:Adonis/Core/Env'
+import Drive from '@ioc:Adonis/Core/Drive'
 
-export default class CarImage extends compose(BaseModel, SoftDeletes) {
+
+export default class Image extends compose(BaseModel, SoftDeletes) {
     @column({ isPrimary: true })
     public id: number
 
     @column()
-    public carId: number
+    public imageableId: number
 
     @column()
-    public type: string
+    public imageable: string
 
     @column()
-    public url: string
+    public drive: string
 
     @column()
-    public urlPreview: string
+    public path: string
 
     @column()
-    public position: number
+    public fileType: string
 
     @column()
-    public mlApproved: boolean
-    
+    public extension: string
+
     @column()
-    public mlSaved: boolean
+    public size: number
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime
@@ -39,11 +41,8 @@ export default class CarImage extends compose(BaseModel, SoftDeletes) {
      * Get the video out URL
      */
     @computed()
-    public get computed_preview() {
-        if (!this.url) {
-            return '';
-        }
-        return `${Env.get('APP_URL')}/images/preview/${this.id}`;
+    public get image_url() {
+        return `${Env.get('S3_URL')}${this.path}`;
     }
      
 }
