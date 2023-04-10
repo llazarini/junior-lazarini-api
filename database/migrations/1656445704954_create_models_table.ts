@@ -8,7 +8,6 @@ export default class extends BaseSchema {
             table.increments('id')
             table.integer('brand_id').unsigned().references('brands.id').nullable();
             table.string('name');
-            table.string('image');
             /**
              * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
              */

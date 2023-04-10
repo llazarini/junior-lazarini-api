@@ -3,7 +3,7 @@ import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
 
-export default class Lead extends compose(BaseModel, SoftDeletes) {
+export default class Fuel extends compose(BaseModel, SoftDeletes) {
     @column({ isPrimary: true })
     public id: number
 
@@ -11,13 +11,7 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     public name: string
 
     @column()
-    public email: string
-
-    @column()
-    public phone: string
-
-    @column()
-    public description: string
+    public slug: string
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

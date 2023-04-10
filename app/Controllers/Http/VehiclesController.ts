@@ -35,7 +35,7 @@ export default class VehiclesController {
         return vehicles;
     }
 
-    public async recentVehicles({ request, response }: HttpContextContract) {
+    public async recentVehicles({ }: HttpContextContract) {
         const vehicles = await Vehicle
             .query()
             .preload('model')
@@ -48,7 +48,7 @@ export default class VehiclesController {
         return vehicles;
     }
 
-    public async similarVehicles({ request, response }: HttpContextContract) {
+    public async similarVehicles({ }: HttpContextContract) {
         const vehicles = await Vehicle
             .query()
             .preload('model')
@@ -62,7 +62,7 @@ export default class VehiclesController {
     }
 
 
-    public async dataprovider({ request, response }: HttpContextContract) {
+    public async dataprovider({ }: HttpContextContract) {
         const brands = await Brand.all();
         const models = await Model.all();
         

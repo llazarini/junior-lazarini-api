@@ -9,6 +9,7 @@ export default class extends BaseSchema {
             table.integer('brand_id').unsigned().references('brands.id').nullable();
             table.integer('model_id').unsigned().references('models.id').nullable();
             table.integer('vehicle_type_id').unsigned().references('vehicle_types.id').nullable();
+            table.integer('fuel_id').unsigned().references('fuels.id').nullable();
             table.string('vin');
             table.string('stock_number');
             table.double('mileage');
@@ -19,6 +20,7 @@ export default class extends BaseSchema {
             table.string('body_style');
             table.string('exterior_color');
             table.string('interior_color');
+            table.dateTime('sold_at').defaultTo(null);
 
             /**
              * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
