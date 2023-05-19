@@ -1,8 +1,13 @@
 #!/bin/bash
 git pull
-yarn build 
+pm2 stop ecosystem.config.js
+yarn build --ignore-ts-errors
 cd ./build 
-yarn install --production 
 cp ../.env.production ./.env
+
+yarn install --production 
+node ace migration:run --force
+
 cd .. 
+
 pm2 reload ecosystem.config.js 
