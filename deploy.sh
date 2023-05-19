@@ -1,6 +1,8 @@
 #!/bin/bash
+
 git pull
 pm2 stop ecosystem.config.js
+yarn
 yarn build --ignore-ts-errors
 cd ./build 
 cp ../.env.production ./.env
