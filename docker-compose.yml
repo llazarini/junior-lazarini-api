@@ -4,7 +4,7 @@ services:
   mysql:
     image: bitnami/mysql:latest
     ports:
-      - 10150:3306
+      - 10140:3306
     environment:
       MYSQL_ROOT_PASSWORD: "1q2w3e4R5t#"
       MYSQL_DATABASE: "app"
@@ -18,14 +18,14 @@ services:
     networks:
       - backend
 
-  redis:
-    image: bitnami/redis:latest
-    ports:
-      - 6379:6379
-    environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
-    networks:
-      - backend
+  #redis:
+  # image: bitnami/redis:latest
+  #  ports:
+  #    - 6379:6379
+  #  environment:
+  #    ALLOW_EMPTY_PASSWORD: "yes"
+  #  networks:
+  #    - backend
 networks:
   backend:
     external: true

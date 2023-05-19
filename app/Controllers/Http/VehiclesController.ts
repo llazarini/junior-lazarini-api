@@ -2,13 +2,14 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Brand from 'App/Models/Brand';
 import Model from 'App/Models/Model';
 import Vehicle from 'App/Models/Vehicle';
+import VehicleType from 'App/Models/VehicleType';
 import StoreValidator from 'App/Validators/Vehicles/StoreValidator'
 import UpdateValidator from 'App/Validators/Vehicles/UpdateValidator';
 
 export default class VehiclesController {
 
-    public async index({ request, response }: HttpContextContract) {
-        
+    public async index({ request, response }: HttpContextContract) { 
+        const { maxPrice, vehicleTypes, search } = request.qs();
         const vehicles = await Vehicle
             .query()
             .preload('model')
@@ -16,17 +17,19 @@ export default class VehiclesController {
             .preload('image')
             .preload('images')
             .where((query) => {
-                if (request.input('brandId')) {
-                    query.whereIn('brand_id', request.input('brandId').split(','))
+                if (!search) {
+                    return;
+                } 
+                query.orWhereHas('model', (q) => q.orWhere('name', 'like', `%${search}%`))
+                query.orWhereHas('brand', (q) => q.orWhere('name', 'like', `%${search}%`))
+                query.orWhereILike('year', search)
+            })
+            .where((query) => {
+                if (vehicleTypes) {
+                    query.whereIn('vehicle_type_id', vehicleTypes.split(','))
                 }
-                if (request.input('modelId')) {
-                    query.whereIn('model_id', request.input('modelId').split(','))
-                }
-                if (request.input('minPrice')) {
-                    query.where('price', '>=', request.input('minPrice'))
-                }
-                if (request.input('maxPrice')) {
-                    query.where('price', '<=', request.input('maxPrice'))
+                if (maxPrice) {
+                    query.where('price', '<=', maxPrice)
                 }
             })
             .whereHas('image', () => {})
@@ -48,6 +51,13 @@ export default class VehiclesController {
         return vehicles;
     }
 
+    public async vehicleTypes({ }: HttpContextContract) {
+        const vehicleTypes = await VehicleType
+            .query();
+        
+        return vehicleTypes;
+    }
+
     public async similarVehicles({ }: HttpContextContract) {
         const vehicles = await Vehicle
             .query()
@@ -60,7 +70,6 @@ export default class VehiclesController {
         
         return vehicles;
     }
-
 
     public async dataprovider({ }: HttpContextContract) {
         const brands = await Brand.all();
@@ -103,7 +112,6 @@ export default class VehiclesController {
         }
         return vehicle;
     }
-
 
     public async store({ request, response }: HttpContextContract) {
         await request.validate(StoreValidator);
