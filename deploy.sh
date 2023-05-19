@@ -1,4 +1,4 @@
-#bash
+#!/bin/bash
 git pull
 yarn build 
 cd ./build 
