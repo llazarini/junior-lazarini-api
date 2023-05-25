@@ -1,18 +1,17 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 import Brand from 'App/Models/Brand'
-import axios from 'axios'
 
 export default class extends BaseSeeder {
     public async run () {
-        const manufacturers = await axios.get(`https://private-anon-5d35bd8737-carsapi1.apiary-mock.com/manufacturers`)
 
-        const brands = manufacturers.data.map(brand => {
-            return {
-                id: brand.id,
-                name: brand.name,
-                slug: brand.name,
-            }
-        });
+        const brands = [
+            { id: 1, name: 'Volkswagen', slug: 'volkswagen', },
+            { id: 2, name: 'Opel', slug: 'opel', },
+            { id: 3, name: 'Hyundai', slug: 'hyundai', },
+            { id: 4, name: 'Toyota', slug: 'toyota', },
+            { id: 5, name: 'Ford', slug: 'ford', },
+            { id: 6, name: 'Fiat', slug: 'fiat', },
+        ]
 
         await Brand.fetchOrCreateMany('slug', brands);
     }

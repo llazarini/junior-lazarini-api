@@ -26,7 +26,6 @@ export default class UpdateValidator {
         year: schema.number(),
         vin: schema.string(),
         transmission: schema.string(),
-        type: schema.string(),
     })
 
     public messages: CustomMessages = {}

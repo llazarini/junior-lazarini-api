@@ -3,6 +3,7 @@ import {
 	BaseModel,
 	BelongsTo,
 	HasMany,
+	beforeCreate,
 	belongsTo,
 	column,
 	hasMany,
@@ -54,8 +55,11 @@ export default class Vehicle extends compose(BaseModel, SoftDeletes) {
 	@column()
 	public seats: number;
 
-	@column()
-	public type: string;
+	@column({ serialize: (value) => { return JSON.parse(value) }})
+	public optionals: string;
+
+	@column({ serialize: (value) => { return JSON.parse(value) }})
+	public description: string;
 
 	@belongsTo(() => Brand)
 	public brand: BelongsTo<typeof Brand>;

@@ -7,7 +7,7 @@ export default class extends BaseSeeder {
             'slug',
             [
                 { name: 'Gasolina', slug: 'gasoline' },
-                { name: 'Disel', slug: 'disel' },
+                { name: 'Gasóleo', slug: 'gas' },
                 { name: 'Elétrico', slug: 'eletric' },
                 { name: 'Híbrido', slug: 'hybrid' },
             ]
