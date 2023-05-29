@@ -1,9 +1,15 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Image from 'App/Models/Image';
+import ImageResizeProcess from 'App/Processing/ImageResizeProcess';
 import StoreValidator from 'App/Validators/Images/StoreValidator'
-import UpdateValidator from 'App/Validators/Images/UpdateValidator';
+import Drive from '@ioc:Adonis/Core/Drive';
 
 export default class ImagesController {
+    /**
+     * Store
+     * @param param0 
+     * @returns 
+     */
     public async store({ request, response }: HttpContextContract) {
         await request.validate(StoreValidator);
 
@@ -49,6 +55,38 @@ export default class ImagesController {
             return response.badRequest({
 				message: 'Error when trying to upload the image to S3 disk.'
 			})
+        }
+    }
+
+    /**
+     * Retrieve an image
+     * @param param0 
+     */
+    public async image({ request, response }: HttpContextContract) {
+        const image = request.input('url');
+        const width = request.input('width') === 'auto' ? null : +request.input('width');
+        const height = request.input('height') === 'auto' ? null : +request.input('height');
+
+        if (!image || !request.input('width') || !request.input('height')) {
+            return response.badRequest({
+                message: 'The width and height must be provided'
+            })
+        }
+        
+        const s3 = Drive.use('s3')
+        const imageResizedName = `resized/${width}x${height}/${image}`;
+
+        if (await s3.exists(imageResizedName)) {
+            console.log(imageResizedName);
+            return response.redirect(
+                await s3.getUrl(imageResizedName)
+            );
+        }
+
+        const url = await ImageResizeProcess.resize(image, imageResizedName, width, height);
+
+        if (typeof url === 'string') {
+            return response.redirect(url, undefined, 301);
         }
     }
 }

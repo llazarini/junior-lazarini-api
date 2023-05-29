@@ -44,5 +44,13 @@ export default class Image extends compose(BaseModel, SoftDeletes) {
     public get image_url() {
         return `${Env.get('S3_URL')}${this.path}`;
     }
+
+    /**
+     * Get the video out URL
+     */
+    @computed()
+    public get image_resized() {
+        return `${Env.get('APP_URL')}/images/image?url=${this.path}`;
+    }
      
 }
