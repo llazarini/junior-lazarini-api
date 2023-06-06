@@ -39,6 +39,7 @@ export default class ImagesController {
             image.fileType = imageFile.type || "";
             image.extension = imageFile.extname || "";
             image.size = imageFile.size || 0;
+            image.requestToken = request.input('request_token');
     
             if (!await image.save()) {
                 return response.badRequest({
@@ -47,7 +48,8 @@ export default class ImagesController {
             }
 
             return {
-                message: "Success when saving the register."
+                message: "Success when saving the register.",
+                data: image
             }
         } catch (e) {
             console.error(e)
@@ -87,6 +89,41 @@ export default class ImagesController {
 
         if (typeof url === 'string') {
             return response.redirect(url, undefined, 301);
+        }
+    }
+
+    /**
+     * Retrieve an image
+     * @param param0 
+     */
+    public async images({ request, response }: HttpContextContract) {
+        const { id, imageable } = request.qs();
+
+        if (!id || !imageable) {
+            return response.badRequest({
+                message: 'Imageable and the id must be provided.'
+            })
+        }
+
+        const images = Image.query()
+            .where('imageable', imageable)
+            .where('imageable_id', id);
+
+        return images;
+    }
+
+    public async delete({ request, response }: HttpContextContract) {
+        const id = request.param('id');
+        const image = await Image.find(id);
+
+        if (!image) {
+            return response.badRequest({
+                message: 'Any image with this ID was found.'
+            })
+        }
+        await image.delete();
+        return {
+            message: 'Image successfully removed.'
         }
     }
 }

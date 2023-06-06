@@ -31,7 +31,10 @@
       "@japa/preset-adonis/build/adonis-typings",
       "@adonisjs/lucid",
       "adonis-lucid-soft-deletes",
-      "@adonisjs/drive-s3"
+      "@adonisjs/drive-s3",
+      "@adonisjs/auth",
+      "@adonisjs/mail",
+      "@adonisjs/view"
     ]
   }
 }

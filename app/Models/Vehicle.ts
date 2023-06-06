@@ -3,6 +3,7 @@ import {
 	BaseModel,
 	BelongsTo,
 	HasMany,
+	afterCreate,
 	beforeCreate,
 	belongsTo,
 	column,
@@ -58,10 +59,12 @@ export default class Vehicle extends compose(BaseModel, SoftDeletes) {
 	@column()
 	public soldAt: DateTime;
 
-	@column({ serialize: (value) => { return JSON.parse(value) }})
-	public optionals: string;
+	@column({ 
+		prepare: (value) => { return JSON.stringify(value) },
+	})
+	public optionals: object;
 
-	@column({ serialize: (value) => { return JSON.parse(value) }})
+	@column()
 	public description: string;
 
 	@belongsTo(() => Brand)
@@ -99,4 +102,18 @@ export default class Vehicle extends compose(BaseModel, SoftDeletes) {
 	
 	@column.dateTime({ columnName: 'deleted_at' })
 	public deletedAt?: DateTime | null;
+
+	/**
+	 * Update images
+	 * @param vehicle 
+	 * @param token 
+	 */
+	public static async updateImages (vehicle: Vehicle, token: string) {
+		await Image.query()
+			.where('request_token', token)
+			.update({
+				imageable_id: vehicle.id,
+			})
+	}
+	
 }

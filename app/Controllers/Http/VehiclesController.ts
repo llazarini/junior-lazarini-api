@@ -74,10 +74,12 @@ export default class VehiclesController {
     public async dataprovider({ }: HttpContextContract) {
         const brands = await Brand.all();
         const models = await Model.all();
+        const vehicleTypes = await VehicleType.all();
         
         return {
             brands,
             models,
+            vehicleTypes,
         }
     }
 
@@ -85,7 +87,7 @@ export default class VehiclesController {
         await request.validate(UpdateValidator);
         
         const vehicle = await Vehicle.find(request.input('id'));
-        vehicle?.merge(request.all());
+        vehicle?.merge(request.except(['request_token']));
         if (!await vehicle?.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."
@@ -117,14 +119,28 @@ export default class VehiclesController {
         await request.validate(StoreValidator);
         
         const vehicle = new Vehicle();
-        vehicle.merge(request.all());
+        vehicle.merge(request.except(['request_token']));
         if (!await vehicle.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."
             })
         }
+
+        // Update images
+        await Vehicle.updateImages(vehicle, request.input('request_token'));
+
         return {
             message: "Success when saving the register."
+        }
+    }
+
+    public async delete({ request, response }: HttpContextContract) {
+        const id = request.param('id');
+        const vehicle = await Vehicle.find(id);
+
+        await vehicle?.delete();
+        return {
+            message: 'Vehicle successfully removed.'
         }
     }
 }

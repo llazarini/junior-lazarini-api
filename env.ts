@@ -36,4 +36,9 @@ export default Env.rules({
     S3_BUCKET: Env.schema.string(),
     S3_REGION: Env.schema.string(),
     S3_ENDPOINT: Env.schema.string.optional(),
+
+	// AWS SES
+	SES_ACCESS_KEY: Env.schema.string(),
+    SES_ACCESS_SECRET: Env.schema.string(),
+    SES_REGION: Env.schema.string(),
 })

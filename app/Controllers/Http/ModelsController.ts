@@ -1,26 +1,26 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Brand from 'App/Models/Brand';
-import StoreValidator from 'App/Validators/Brands/StoreValidator';
-import UpdateValidator from 'App/Validators/Brands/UpdateValidator';
+import Model from 'App/Models/Model';
+import StoreValidator from 'App/Validators/Models/StoreValidator';
+import UpdateValidator from 'App/Validators/Models/UpdateValidator';
 
-export default class BrandsController {
+export default class ModelsController {
 
     public async index({ request, response }: HttpContextContract) { 
         const { search } = request.qs();
         
-        const brands = await Brand
+        const models = await Model
             .query()
             .paginate(request.param('page'), 12);
     
-        return brands;
+        return models;
     }
 
     public async update({ request, response }: HttpContextContract) {
         await request.validate(UpdateValidator);
         
-        const brand = await Brand.find(request.input('id'));
-        brand?.merge(request.all());
-        if (!await brand?.save()) {
+        const model = await Model.find(request.input('id'));
+        model?.merge(request.all());
+        if (!await model?.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."
             })
@@ -31,25 +31,25 @@ export default class BrandsController {
     }
 
     public async show({ request, response }: HttpContextContract) {
-        const brand = await Brand
+        const model = await Model
             .query()
             .where('id', request.param('id'))
             .first();
         
-        if (!brand) {
+        if (!model) {
             return response.badRequest({
                 message: "Error when trying to save the register."
             })
         }
-        return brand;
+        return model;
     }
 
     public async store({ request, response }: HttpContextContract) {
         await request.validate(StoreValidator);
         
-        const brand = new Brand();
-        brand.merge(request.all());
-        if (!await brand.save()) {
+        const model = new Model();
+        model.merge(request.all());
+        if (!await model.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."
             })

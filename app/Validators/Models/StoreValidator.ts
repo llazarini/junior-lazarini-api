@@ -5,10 +5,13 @@ export default class StoreValidator {
     constructor(protected ctx: HttpContextContract) {}
 
     public schema = schema.create({
-        imageable: schema.string(),
-        imageable_id: schema.number.optional(),
-        request_token: schema.string.optional(),
-        image: schema.file(),
+        name: schema.string([
+            rules.alpha(),
+            rules.maxLength(128)
+        ]),
+        brand_id: schema.number([
+            rules.exists({ table: 'brands', column: 'id' }),
+        ]),
     })
 
     public messages: CustomMessages = {}

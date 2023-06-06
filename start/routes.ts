@@ -24,7 +24,9 @@ Route.get('/', async () => {
     return { api: 'v1' }
 })
 
-// import "../routes/auth"
+import "../routes/auth"
 import "../routes/images"
 import "../routes/leads"
 import "../routes/vehicles"
+import "../routes/brands"
+import "../routes/models"

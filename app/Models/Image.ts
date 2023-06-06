@@ -3,7 +3,6 @@ import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
 import Env from '@ioc:Adonis/Core/Env'
-import Drive from '@ioc:Adonis/Core/Drive'
 
 
 export default class Image extends compose(BaseModel, SoftDeletes) {
@@ -18,6 +17,9 @@ export default class Image extends compose(BaseModel, SoftDeletes) {
 
     @column()
     public drive: string
+
+    @column()
+    public requestToken: string
 
     @column()
     public path: string
