@@ -60,6 +60,7 @@ export default class Vehicle extends compose(BaseModel, SoftDeletes) {
 	public soldAt: DateTime;
 
 	@column({ 
+		serialize: (value) => { return JSON.parse(value) },
 		prepare: (value) => { return JSON.stringify(value) },
 	})
 	public optionals: object;

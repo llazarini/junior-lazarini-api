@@ -10,7 +10,7 @@ export default class BrandsController {
         
         const brands = await Brand
             .query()
-            .paginate(request.param('page'), 12);
+            .paginate(request.input('page'), 10);
     
         return brands;
     }

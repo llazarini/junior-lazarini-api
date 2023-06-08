@@ -6,5 +6,6 @@ Route.group(() => {
 		Route.post("/store", "BrandsController.store");
 		Route.put("/update", "BrandsController.update");
 		Route.delete("/delete/:id", "BrandsController.delete");
+		Route.get("/show/:id", "BrandsController.show");
 	}).middleware(['auth'])
 }).prefix("brands");

@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Brand from 'App/Models/Brand';
 import Model from 'App/Models/Model';
 import StoreValidator from 'App/Validators/Models/StoreValidator';
 import UpdateValidator from 'App/Validators/Models/UpdateValidator';
@@ -10,7 +11,8 @@ export default class ModelsController {
         
         const models = await Model
             .query()
-            .paginate(request.param('page'), 12);
+            .preload('brand')
+            .paginate(request.input('page'), 10);
     
         return models;
     }
@@ -57,5 +59,11 @@ export default class ModelsController {
         return {
             message: "Success when saving the register."
         }
+    }
+
+    public async dataprovider() {
+        const brands = await Brand.all();
+
+        return { brands }
     }
 }

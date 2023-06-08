@@ -9,8 +9,8 @@ import UpdateValidator from 'App/Validators/Vehicles/UpdateValidator';
 export default class VehiclesController {
 
     public async index({ request, response }: HttpContextContract) { 
-        const { maxPrice, vehicleTypes, search } = request.qs();
-        const vehicles = await Vehicle
+        const { maxPrice, vehicleTypes, search, onlyImages } = request.qs();
+        let vehicles = Vehicle
             .query()
             .preload('model')
             .preload('brand')
@@ -31,9 +31,13 @@ export default class VehiclesController {
                 if (maxPrice) {
                     query.where('price', '<=', maxPrice)
                 }
-            })
-            .whereHas('image', () => {})
-            .paginate(request.param('page'), 12);
+            });
+
+        if (onlyImages) {
+            vehicles = vehicles.whereHas('image', () => {});
+        }
+
+        vehicles = await vehicles.paginate(request.input('page'), 10);
         
         return vehicles;
     }
@@ -125,6 +129,8 @@ export default class VehiclesController {
                 message: "Error when trying to save the register."
             })
         }
+
+        console.log(request.all())
 
         // Update images
         await Vehicle.updateImages(vehicle, request.input('request_token'));

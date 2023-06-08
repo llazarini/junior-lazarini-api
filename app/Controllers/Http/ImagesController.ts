@@ -39,7 +39,7 @@ export default class ImagesController {
             image.fileType = imageFile.type || "";
             image.extension = imageFile.extname || "";
             image.size = imageFile.size || 0;
-            image.requestToken = request.input('request_token');
+            image.requestToken = request.input('request_token') || '';
     
             if (!await image.save()) {
                 return response.badRequest({
