@@ -13,15 +13,15 @@ export default class StoreValidator {
             rules.exists({ table: "leads", column: "id" }),
         ]),
         name: schema.string([
-            rules.alpha(),
+            rules.alpha({ allow: ['space'] }),
             rules.maxLength(128)
         ]),
         email: schema.string([
-            rules.unique({ table: "leads", column: "email" }),
+            // rules.unique({ table: "leads", column: "email" }),
             rules.email(),
             rules.maxLength(128)
         ]),
-        phone: schema.string([
+        phone: schema.string.optional([
             rules.unique({ table: "leads", column: "phone" }),
             rules.mobile(),
         ]),
