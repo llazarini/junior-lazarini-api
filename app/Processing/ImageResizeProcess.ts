@@ -9,7 +9,6 @@ export default class ImageResizeProcess {
         const file = await s3.get(imageName)
 
         try {
-            console.log(width, height)
             const result = await new Promise((resolve, reject) => {
                 sharp(file)
                     .resize(width, height)

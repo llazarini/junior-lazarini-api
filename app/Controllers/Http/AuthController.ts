@@ -76,7 +76,6 @@ export default class AuthController {
                 return response.badRequest({  message: "This user does not exist."})
   
             }
-            console.log(user.password)
             if (currentPassword) {
                 const isValid= await Hash.verify(user.password, currentPassword)
                 if(!isValid){

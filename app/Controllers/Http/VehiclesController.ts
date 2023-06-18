@@ -129,9 +129,6 @@ export default class VehiclesController {
                 message: "Error when trying to save the register."
             })
         }
-
-        console.log(request.all())
-
         // Update images
         await Vehicle.updateImages(vehicle, request.input('request_token'));
 

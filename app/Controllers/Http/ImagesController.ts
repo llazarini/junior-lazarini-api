@@ -79,7 +79,6 @@ export default class ImagesController {
         const imageResizedName = `resized/${width}x${height}/${image}`;
 
         if (await s3.exists(imageResizedName)) {
-            console.log(imageResizedName);
             return response.redirect(
                 await s3.getUrl(imageResizedName)
             );
