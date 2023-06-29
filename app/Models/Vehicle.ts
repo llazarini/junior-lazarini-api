@@ -1,10 +1,7 @@
 import { DateTime } from "luxon";
 import {
-	BaseModel,
 	BelongsTo,
 	HasMany,
-	afterCreate,
-	beforeCreate,
 	belongsTo,
 	column,
 	hasMany,
@@ -15,8 +12,9 @@ import Brand from "./Brand";
 import Model from "./Model";
 import VehicleType from "./VehicleType";
 import Image from "./Image";
+import BaseCompany from "./BaseCompany";
 
-export default class Vehicle extends compose(BaseModel, SoftDeletes) {
+export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column({ isPrimary: true })
 	public id: number;
 
@@ -28,6 +26,9 @@ export default class Vehicle extends compose(BaseModel, SoftDeletes) {
 
 	@column()
 	public vehicleTypeId: number;
+
+	@column()
+	public engineId: number;
 
 	@column()
 	public vin: string;

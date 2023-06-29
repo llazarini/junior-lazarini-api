@@ -127,6 +127,10 @@ export const http: ServerConfig = {
   |
   */
   forceContentNegotiationTo: 'application/json',
+  /**
+   * With this we can get the HTTP context in anywhere, for example, inside models
+   */
+  useAsyncLocalStorage: true,
 }
 
 /*

@@ -6,9 +6,6 @@ export default class Engine extends BaseModel {
     public id: number
 
     @column()
-    public externalId: string
-
-    @column()
     public name: string
     
     @column()

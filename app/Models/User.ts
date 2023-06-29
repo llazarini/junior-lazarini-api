@@ -1,15 +1,18 @@
-import { BaseModel, beforeSave, BelongsTo, belongsTo, column, computed, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import { beforeSave, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
 import UserType from "./UserType";
 import Hash from "@ioc:Adonis/Core/Hash";
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
-import Database from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from 'luxon'
+import BaseCompany from "./BaseCompany";
 
 
-export default class User extends compose(BaseModel, SoftDeletes) {
+export default class User extends compose(BaseCompany, SoftDeletes) {
 	@column({ isPrimary: true })
 	public id: number;
+	
+	@column()
+	public companyId: number;
 
 	@column()
 	public userTypeId: number;

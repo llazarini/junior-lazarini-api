@@ -5,4 +5,5 @@ Route.group(() => {
 	Route.get("/show/:id", "LeadsController.show");
 	Route.post("/store", "LeadsController.store");
 	Route.put("/update", "LeadsController.update");
-}).prefix("leads");
+})
+.prefix("leads");

@@ -7,14 +7,17 @@ export default class State extends BaseModel {
     public id: number
 
     @column()
+    public countryId: number
+
+    @column()
     public name: string
 
     @column()
-    public shortName: string
+    public code: string
 
     @column()
-    public countryId: number
-
+    public facebookCode: string
+    
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime
 

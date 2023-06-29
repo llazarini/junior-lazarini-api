@@ -1,21 +1,19 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-    protected tableName = 'notifications'
+    protected tableName = 'ads'
 
     public async up () {
         this.schema.createTable(this.tableName, (table) => {
             table.increments('id')
             table.integer('company_id').unsigned().references('companies.id').notNullable();
-            table.string('notifiable').nullable();
-            table.integer('notifiable_id').unsigned().nullable();
-            table.enum('type', ['database', 'email', 'sms']).nullable()
-            table.string('icon', 32).nullable()
-            table.string('title', 128).nullable()
-            table.string('description', 1024).nullable()
-            table.string('link', 256).nullable()
-            table.json('data').nullable()
-            table.boolean('read').defaultTo(false)
+            table.integer('vehicle_id').unsigned().references('vehicles.id').notNullable();
+            table.integer('target_id').unsigned().references('targets.id').notNullable();
+            table.string('title').notNullable();
+            table.string('link').notNullable();
+            table.json('platforms').notNullable();
+            table.dateTime('schedule_date').notNullable();
+            
             /**
              * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
              */

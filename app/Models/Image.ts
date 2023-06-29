@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, computed } from '@ioc:Adonis/Lucid/Orm'
+import { column, computed } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
 import Env from '@ioc:Adonis/Core/Env'
+import BaseCompany from './BaseCompany'
 
 
-export default class Image extends compose(BaseModel, SoftDeletes) {
+export default class Image extends compose(BaseCompany, SoftDeletes) {
     @column({ isPrimary: true })
     public id: number
 
@@ -54,5 +55,4 @@ export default class Image extends compose(BaseModel, SoftDeletes) {
     public get image_resized() {
         return `${Env.get('APP_URL')}/images/image?url=${this.path}`;
     }
-     
 }
