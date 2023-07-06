@@ -12,13 +12,16 @@ export default class extends BaseSchema {
             table.string('title').notNullable();
             table.string('link').notNullable();
             table.json('platforms').notNullable();
-            table.dateTime('schedule_date').notNullable();
+            table.double('daily_price').defaultTo(0).notNullable();
+            table.double('max_price').defaultTo(0).notNullable();
+            table.dateTime('schedule_date').nullable();
             
             /**
              * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
              */
             table.timestamp('created_at', { useTz: true })
             table.timestamp('updated_at', { useTz: true })
+            table.dateTime(`deleted_at`, { useTz: true }).defaultTo(null)
         })
     }
 

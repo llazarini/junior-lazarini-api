@@ -13,6 +13,7 @@ import Model from "./Model";
 import VehicleType from "./VehicleType";
 import Image from "./Image";
 import BaseCompany from "./BaseCompany";
+import Ad from "./Ad";
 
 export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column({ isPrimary: true })
@@ -69,6 +70,16 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column()
 	public description: string;
 
+	@column.dateTime({ autoCreate: true })
+	public createdAt: DateTime;
+
+	@column.dateTime({ autoCreate: true, autoUpdate: true })
+	public updatedAt: DateTime;
+	
+	@column.dateTime({ columnName: 'deleted_at' })
+	public deletedAt?: DateTime | null;
+
+
 	@belongsTo(() => Brand)
 	public brand: BelongsTo<typeof Brand>;
 
@@ -96,14 +107,11 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	})
 	public images: HasMany<typeof Image>;
 
-	@column.dateTime({ autoCreate: true })
-	public createdAt: DateTime;
-
-	@column.dateTime({ autoCreate: true, autoUpdate: true })
-	public updatedAt: DateTime;
-	
-	@column.dateTime({ columnName: 'deleted_at' })
-	public deletedAt?: DateTime | null;
+	@hasMany(() => Ad, {
+		foreignKey: 'vehicleId',
+		localKey: 'id',
+	})
+	public ads: HasMany<typeof Ad>;
 
 	/**
 	 * Update images

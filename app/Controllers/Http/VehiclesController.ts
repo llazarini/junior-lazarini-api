@@ -16,6 +16,7 @@ export default class VehiclesController {
             .preload('brand')
             .preload('image')
             .preload('images')
+            .preload('ads')
             .where((query) => {
                 if (!search) {
                     return;

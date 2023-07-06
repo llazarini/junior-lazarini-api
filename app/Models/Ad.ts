@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@ioc:Adonis/Lucid/Orm'
+import BaseCompany from './BaseCompany'
 
-export default class Ad extends BaseModel {
+export default class Ad extends BaseCompany {
     @column({ isPrimary: true })
     public id: number
 
@@ -20,11 +21,14 @@ export default class Ad extends BaseModel {
     @column()
     public link: string
 
-    @column()
+    @column({
+        serialize: (value) => typeof value === 'string' ? JSON.parse(value) : value,
+		prepare: (value) => JSON.stringify(value),
+    })
     public platforms: string
 
     @column()
-    public scheduleDate: DateTime
+    public scheduleDate: Date
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

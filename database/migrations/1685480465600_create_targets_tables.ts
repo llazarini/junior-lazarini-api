@@ -11,13 +11,14 @@ export default class extends BaseSchema {
             table.string('name').notNullable();
             table.integer('min_age').notNullable().defaultTo(18);
             table.integer('max_age').notNullable().defaultTo(18);
-            table.double('amount_bid').defaultTo(0)
-            table.double('daily_budget').defaultTo(0)
+            table.double('default_amount_bid').defaultTo(0)
+            table.double('default_daily_budget').defaultTo(0)
             /**
              * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
              */
             table.timestamp('created_at', { useTz: true })
             table.timestamp('updated_at', { useTz: true })
+            table.dateTime(`deleted_at`, { useTz: true }).defaultTo(null)
         })
     }
 
