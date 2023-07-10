@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Integration from './Integration'
 
 export default class AdIntegration extends BaseModel {
     @column({ isPrimary: true })
@@ -14,8 +15,11 @@ export default class AdIntegration extends BaseModel {
     @column()
     public referenceId: string
 
-    @column()
-    public additionalData: string
+    @column({
+        serialize: (value) => typeof value === 'string' ? JSON.parse(value) : value,
+		prepare: (value) => JSON.stringify(value),
+    })
+    public additionalData: any
 
     @column()
     public integrated: boolean
@@ -25,4 +29,7 @@ export default class AdIntegration extends BaseModel {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updatedAt: DateTime
+
+    @belongsTo(() => Integration)
+    public integration: BelongsTo<typeof Integration>;
 }

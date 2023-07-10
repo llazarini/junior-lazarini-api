@@ -1,6 +1,9 @@
 import { DateTime } from 'luxon'
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import { BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import BaseCompany from './BaseCompany'
+import Target from './Target'
+import Vehicle from './Vehicle'
+import AdIntegration from './AdIntegration'
 
 export default class Ad extends BaseCompany {
     @column({ isPrimary: true })
@@ -35,4 +38,13 @@ export default class Ad extends BaseCompany {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updatedAt: DateTime
+
+    @belongsTo(() => Target)
+    public target: BelongsTo<typeof Target>;
+
+    @belongsTo(() => Vehicle)
+    public vehicle: BelongsTo<typeof Vehicle>;
+
+    @hasMany(() => AdIntegration)
+    public integrations: HasMany<typeof AdIntegration>;
 }

@@ -18,14 +18,14 @@ services:
     networks:
       - backend
 
-  #redis:
-  # image: bitnami/redis:latest
-  #  ports:
-  #    - 6379:6379
-  #  environment:
-  #    ALLOW_EMPTY_PASSWORD: "yes"
-  #  networks:
-  #    - backend
+  redis:
+    image: bitnami/redis:latest
+    ports:
+      - 6379:6379
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - backend
 networks:
   backend:
     external: true

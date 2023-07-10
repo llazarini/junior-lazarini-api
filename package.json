@@ -27,6 +27,7 @@
     "@adonisjs/mail": "^8.2.0",
     "@adonisjs/repl": "^3.1.0",
     "@adonisjs/view": "^6.2.0",
+    "@rocketseat/adonis-bull": "^1.0.4",
     "adonis-lucid-soft-deletes": "^1.4.3",
     "aws-sdk": "^2.1387.0",
     "axios": "^1.3.5",

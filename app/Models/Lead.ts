@@ -8,6 +8,9 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     public id: number
 
     @column()
+    public companyId: number
+
+    @column()
     public name: string
 
     @column()

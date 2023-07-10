@@ -6,6 +6,8 @@ import UpdateValidator from 'App/Validators/Ads/UpdateValidator';
 import { RequestContract } from '@ioc:Adonis/Core/Request';
 import Integration from 'App/Models/Integration';
 import AdIntegration from 'App/Models/AdIntegration';
+import Bull from '@ioc:Rocketseat/Bull';
+import CreateFacebookPost from 'App/Jobs/CreateFacebookPost';
 
 export default class AdsController {
 
@@ -14,6 +16,14 @@ export default class AdsController {
         
         const ads = await Ad
             .query()
+            .preload('target')
+            .preload('integrations', (query) => {
+                query.preload('integration')
+            })
+            .preload('vehicle', (query) => {
+                query.preload('model')
+                query.preload('brand')
+            })
             .paginate(request.input('page'), 10);
     
         return ads;
@@ -63,6 +73,7 @@ export default class AdsController {
         }
 
         await this.createIntegrations(ad, request);
+
     
         return {
             message: "Success when saving the register."
@@ -86,11 +97,15 @@ export default class AdsController {
                     throw new Error('Integration not found');
                 }
 
-                await AdIntegration.create({
+                const adIntegration = await AdIntegration.create({
                     adId: ad.id,
                     integrationId: integration?.id,
                     integrated: false,
                 })
+
+                if (integration.slug === 'facebook') {
+                    Bull.add(new CreateFacebookPost().key, { adIntegration })
+                }
             })
         )
     }
@@ -106,6 +121,11 @@ export default class AdsController {
 
     public async delete({ request, response, auth }: HttpContextContract) {
         const id = request.param('id');
+
+        await AdIntegration
+            .query()
+            .where('ad_id', id)
+            .delete();
 
         const ad = await Ad.find(id);
         await ad?.delete();

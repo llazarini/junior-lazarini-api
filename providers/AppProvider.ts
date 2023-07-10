@@ -14,6 +14,7 @@ export default class AppProvider {
 
   public async ready () {
     // App is ready
+    await import('../start/bull');
   }
 
   public async shutdown () {

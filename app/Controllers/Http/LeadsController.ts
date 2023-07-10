@@ -33,6 +33,7 @@ export default class LeadsController {
         
         const lead = new Lead();
         lead.merge(request.all());
+        lead.companyId = 1;
         if (!await lead.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."

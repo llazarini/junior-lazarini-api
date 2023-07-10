@@ -38,7 +38,12 @@ export class Facebook implements Integration {
             return false;
         }
         const adId = await this.createAd(post, adCreativeId, adSetId)
-        console.log(post.mediaUrls[0], campaignId, adSetId);
+        return {
+            campaignId,
+            adSetId,
+            adCreativeId,
+            adId,
+        }
     }
 
     public async delete(id: string) {
@@ -57,6 +62,22 @@ export class Facebook implements Integration {
     
         return facebookTargeting;
     }
+
+    public async searchInterests(interest: string): Promise<string | null> {
+        try {
+            const response: AxiosResponse = await axios.get(
+                `https://graph.facebook.com/${this.version}/search?type=adinterest&q=${interest}&access_token=${this.accessToken}`);
+
+            if (response.status === 200) {
+                console.log(response.data);
+            }
+        } catch (error) {
+            console.log(error.response)
+            console.error('Failed to search for interesets:', error.message);
+        }
+        return null;
+    }
+
 
     public async createAdImage(imageUrl: string): Promise<string | null> {
         const file = fs.readFileSync(imageUrl, {encoding: 'base64'});
@@ -101,7 +122,7 @@ export class Facebook implements Integration {
                 throw new Error(response.data.error);
             }
         } catch (error) {
-            console.error(error);
+            console.error(error.response.data);
             return null;
         }
     }
@@ -134,7 +155,7 @@ export class Facebook implements Integration {
                 throw new Error(response.data.error);
             }
         } catch (error) {
-            console.error(error);
+            console.error(error.response.data);
             return null;
         }
     }
@@ -174,7 +195,7 @@ export class Facebook implements Integration {
                 console.error('Failed to create ad creative:', response.data);
             }
         } catch (error) {
-            console.error(error.response)
+            console.error(error.response.data);
             console.error('Failed to create ad creative:', error.message);
         }
 
@@ -204,7 +225,7 @@ export class Facebook implements Integration {
                 console.error('Failed to create ad:', response.data.error);
             }
         } catch (error) {
-            console.error(error.response)
+            console.error(error.response.data);
             console.error('Failed to create ad:', error.message);
         }
         return null;

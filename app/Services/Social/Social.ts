@@ -26,9 +26,16 @@ export class Social {
     }
 
     public async post(post: Post) {
-        await Promise.allSettled(post.platforms.map(async (platform) => {
+        const responses = await Promise.allSettled(post.platforms.map(async (platform) => {
             const integration = this.getIntegration(platform);
-            await integration.post(post)
+            return {
+                platform,
+                response: await integration.post(post)
+            }
         }))
+
+        return responses.map((response: any) => {
+            return response.value;
+        })
     }
 }

@@ -34,7 +34,8 @@
       "@adonisjs/drive-s3",
       "@adonisjs/auth",
       "@adonisjs/mail",
-      "@adonisjs/view"
+      "@adonisjs/view",
+      "@rocketseat/adonis-bull"
     ]
   }
 }
