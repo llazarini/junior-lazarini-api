@@ -30,7 +30,7 @@ public static commandName = 'create:facebook_interests'
     public async run() {
         const { Facebook } = await import('App/Services/Social/integrations/Facebook')
         const facebook = new Facebook({ 
-            accessToken: 'EAADZCyr5K448BAIDGvZCdlrKxv2KOpEKElygpeIZBGByp3BVS340l2sGt5ZA4yqxSifCYezr3tc6fgKnGKkHivZABhkD28zVSUvTHZBMfbuplf7e0hBugN02ZBAWNNW1erVZA6V8V5cZCMSYjLd6YadKvDJFJh7igxiNVNOZAt7uEt5x3QvMueTWmE8jTgUyh0ZA19zrr1JW4EGweOTwmxvo4TMX4M87TpCncIZD',
+            accessToken: 'EAADZCyr5K448BAATi4bHZCnLZA4Xdg9WdOMl5vmZCi3whfjGQ5DcR7M6FSaGP5h93luu7FrgZCRp3oBALeWlFvT6iY71P6xeZAzIBi0IyQ48HvjBBXYGaVxNKxs9M0CZBaUd4gqxie7Xu984X3X2xZApI2LLyS65ZB4SzXxZA4LpMZC9jn3dSjUHkfRS4yFTZBdpZCg4ZD',
             clientSecret: '55dea9b16495144fff332714a79b66ee',
             clientId: '281246241055631',
             accountId: 'act_415509278537487',

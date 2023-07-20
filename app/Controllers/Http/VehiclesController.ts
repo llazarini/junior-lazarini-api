@@ -1,10 +1,13 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Brand from 'App/Models/Brand';
 import Model from 'App/Models/Model';
+import Optional from 'App/Models/Optional';
 import Vehicle from 'App/Models/Vehicle';
+import VehicleOptional from 'App/Models/VehicleOptional';
 import VehicleType from 'App/Models/VehicleType';
 import StoreValidator from 'App/Validators/Vehicles/StoreValidator'
 import UpdateValidator from 'App/Validators/Vehicles/UpdateValidator';
+import { HttpRequest } from 'aws-sdk';
 
 export default class VehiclesController {
 
@@ -80,11 +83,13 @@ export default class VehiclesController {
         const brands = await Brand.all();
         const models = await Model.all();
         const vehicleTypes = await VehicleType.all();
+        const optionals = await Optional.all();
         
         return {
             brands,
             models,
             vehicleTypes,
+            optionals,
         }
     }
 
@@ -93,11 +98,19 @@ export default class VehiclesController {
         
         const vehicle = await Vehicle.find(request.input('id'));
         vehicle?.merge(request.except(['request_token']));
-        if (!await vehicle?.save()) {
+        if (!vehicle || !await vehicle?.save()) {
             return response.badRequest({
                 message: "Error when trying to save the register."
             })
         }
+
+        // Update vehicle optionals
+        if (!await this.updateOptionals(vehicle, request)) {
+            return response.badRequest({
+                message: "Error when trying to save the optionals."
+            })
+        }
+
         return {
             message: "Success when saving the register."
         }
@@ -109,6 +122,7 @@ export default class VehiclesController {
             .preload('model')
             .preload('brand')
             .preload('images')
+            .preload('optionals')
             .where('id', request.param('id'))
             .first();
         
@@ -130,12 +144,38 @@ export default class VehiclesController {
                 message: "Error when trying to save the register."
             })
         }
+
         // Update images
         await Vehicle.updateImages(vehicle, request.input('request_token'));
+
+        // Update vehicle optionals
+        if (!await this.updateOptionals(vehicle, request)) {
+            return response.badRequest({
+                message: "Error when trying to save the optionals."
+            })
+        }
 
         return {
             message: "Success when saving the register."
         }
+    }
+
+    private async updateOptionals(vehicle: Vehicle, request: any) {
+        await VehicleOptional
+            .query()
+            .where('vehicleId', vehicle.id)
+            .delete();
+            
+        await Promise.allSettled(
+            request.input('optionals').map(async (item) => {
+                await VehicleOptional.create({
+                    vehicleId: vehicle.id,
+                    optionalId: item.id,
+                })
+            })
+        )
+
+        return true;
     }
 
     public async delete({ request, response }: HttpContextContract) {

@@ -2,9 +2,11 @@ import { DateTime } from "luxon";
 import {
 	BelongsTo,
 	HasMany,
+	HasManyThrough,
 	belongsTo,
 	column,
 	hasMany,
+	hasManyThrough,
 } from "@ioc:Adonis/Lucid/Orm";
 import { compose } from '@ioc:Adonis/Core/Helpers';
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes';
@@ -14,6 +16,8 @@ import VehicleType from "./VehicleType";
 import Image from "./Image";
 import BaseCompany from "./BaseCompany";
 import Ad from "./Ad";
+import Optional from "./Optional";
+import VehicleOptional from "./VehicleOptional";
 
 export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column({ isPrimary: true })
@@ -61,12 +65,6 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column()
 	public soldAt: DateTime;
 
-	@column({ 
-		serialize: (value) => typeof value === 'string' ? JSON.parse(value) : value,
-		prepare: (value) => JSON.stringify(value),
-	})
-	public optionals: object;
-
 	@column()
 	public description: string;
 
@@ -112,6 +110,14 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 		localKey: 'id',
 	})
 	public ads: HasMany<typeof Ad>;
+
+	@hasManyThrough([() => Optional, () => VehicleOptional], {
+		foreignKey: 'vehicleId',
+		localKey: 'id',
+		throughLocalKey: 'optionalId',
+		throughForeignKey: 'id'
+	})
+	public optionals: HasManyThrough<typeof Optional>;
 
 	/**
 	 * Update images
