@@ -24,8 +24,8 @@ export default class UpdateValidator {
             rules.maxLength(128)
         ]),
         phone: schema.string([
-            rules.minLength(8),
-            rules.maxLength(9)
+            rules.minLength(4),
+            rules.maxLength(13),
         ]),
     })
 

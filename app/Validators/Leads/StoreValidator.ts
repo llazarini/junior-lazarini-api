@@ -26,8 +26,8 @@ export default class StoreValidator {
         ]),
         phone: schema.string.optional([
             //rules.unique({ table: "leads", column: "phone" }),
-            rules.minLength(8),
-            rules.maxLength(9)
+            rules.minLength(4),
+            rules.maxLength(13),
         ]),
         import_as: schema.string.optional(),
     })
