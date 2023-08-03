@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Lead from 'App/Models/Lead';
+import { EmailService } from 'App/Services/Email';
 import StoreValidator from 'App/Validators/Leads/StoreValidator'
 import UpdateValidator from 'App/Validators/Leads/UpdateValidator';
 
@@ -39,6 +40,10 @@ export default class LeadsController {
                 message: "Error when trying to save the register."
             })
         }
+        
+        // Envia o email para o lead
+        await EmailService.send(lead.email, 'Mentoria de Importação de Carros', 'emails/newLeadMentoring', lead)
+
         return {
             message: "Success when saving the register."
         }

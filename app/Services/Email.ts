@@ -7,7 +7,7 @@ export class EmailService {
     public static async send(to: string, subject: string, layout: string, object?: any) {
         return await Mail.send((message) => {
             message
-                .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'evrdrive')
+                .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'Junior Lazarini')
                 .to(to)
                 .subject(subject)
                 .htmlView(layout, object);
@@ -18,7 +18,7 @@ export class EmailService {
         const render = View.renderSync(layout, object);
         return await Mail.send((message) => {
             message
-                .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'evrdrive')
+                .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'Junior Lazarini')
                 .to(to)
                 .subject(subject)
                 .text(render);

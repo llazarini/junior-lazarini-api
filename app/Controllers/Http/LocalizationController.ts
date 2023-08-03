@@ -14,6 +14,8 @@ export default class LocalizationController {
                     query.where('name', search)
                 }
             });
+
+        console.log(JSON.stringify(countries))
     
         return countries;
     }

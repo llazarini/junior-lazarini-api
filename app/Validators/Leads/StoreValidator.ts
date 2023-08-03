@@ -12,19 +12,24 @@ export default class StoreValidator {
         id: schema.number.optional([
             rules.exists({ table: "leads", column: "id" }),
         ]),
+        country_id: schema.number([
+            rules.exists({ table: "countries", column: "id" }),
+        ]),
         name: schema.string([
             rules.alpha({ allow: ['space'] }),
             rules.maxLength(128)
         ]),
         email: schema.string([
-            // rules.unique({ table: "leads", column: "email" }),
+            //rules.unique({ table: "leads", column: "email" }),
             rules.email(),
             rules.maxLength(128)
         ]),
         phone: schema.string.optional([
-            rules.unique({ table: "leads", column: "phone" }),
-            rules.mobile(),
+            //rules.unique({ table: "leads", column: "phone" }),
+            rules.minLength(8),
+            rules.maxLength(9)
         ]),
+        import_as: schema.string.optional(),
     })
 
     public messages: CustomMessages = {}

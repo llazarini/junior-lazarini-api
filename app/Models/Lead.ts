@@ -11,6 +11,9 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     public companyId: number
 
     @column()
+    public countryId: number
+
+    @column()
     public name: string
 
     @column()
@@ -21,6 +24,12 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
 
     @column()
     public description: string
+
+    @column()
+    public importAs: string
+
+    @column()
+    public interestedIn: string
 
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

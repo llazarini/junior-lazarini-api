@@ -18,7 +18,7 @@ export default mailConfig({
   | a mailer
   |
   */
-  mailer: 'ses',
+  mailer: 'smtp',
 
   /*
   |--------------------------------------------------------------------------
@@ -48,6 +48,17 @@ export default mailConfig({
     | ```
     |
     */
+    smtp: {
+      driver: 'smtp',
+      host: Env.get('SMTP_HOST'),
+      port: Env.get('SMTP_PORT'),
+			auth: {
+				user: Env.get('SMTP_USERNAME'),
+				pass: Env.get('SMTP_PASSWORD'),
+				type: 'login',
+			}
+    },
+
     ses: {
       driver: 'ses',
       apiVersion: '2010-12-01',

@@ -122,6 +122,7 @@ export default class VehiclesController {
             .preload('model')
             .preload('brand')
             .preload('images')
+            .preload('fuel')
             .preload('optionals')
             .where('id', request.param('id'))
             .first();

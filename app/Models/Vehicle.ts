@@ -18,6 +18,7 @@ import BaseCompany from "./BaseCompany";
 import Ad from "./Ad";
 import Optional from "./Optional";
 import VehicleOptional from "./VehicleOptional";
+import Fuel from "./Fuel";
 
 export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column({ isPrimary: true })
@@ -30,10 +31,16 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	public modelId: number;
 
 	@column()
+	public fuelId: number;
+
+	@column()
 	public vehicleTypeId: number;
 
 	@column()
 	public engineId: number;
+
+	@column()
+	public version: string;
 
 	@column()
 	public vin: string;
@@ -83,6 +90,10 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 
 	@belongsTo(() => Model)
 	public model: BelongsTo<typeof Model>;
+
+	@belongsTo(() => Fuel)
+	public fuel: BelongsTo<typeof Fuel>;
+
 
 	@belongsTo(() => VehicleType)
 	public vehicleType: BelongsTo<typeof VehicleType>;

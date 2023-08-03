@@ -12,18 +12,20 @@ export default class UpdateValidator {
         id: schema.number.optional([
             rules.exists({ table: "leads", column: "id" }),
         ]),
+        country_id: schema.number([
+            rules.exists({ table: "countries", column: "id" }),
+        ]),
         name: schema.string([
             rules.alpha(),
             rules.maxLength(128)
         ]),
         email: schema.string([
-            rules.unique({ table: "leads", column: "email", whereNot: { id: this.refs.id, } }),
             rules.email(),
             rules.maxLength(128)
         ]),
         phone: schema.string([
-            rules.unique({ table: "leads", column: "phone", whereNot: { id: this.refs.id, } }),
-            rules.mobile(),
+            rules.minLength(8),
+            rules.maxLength(9)
         ]),
     })
 

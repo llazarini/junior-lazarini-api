@@ -19,6 +19,7 @@ export default class StoreValidator {
         year: schema.number(),
         vin: schema.string(),
         transmission: schema.string(),
+        version: schema.string(),
     })
 
     public messages: CustomMessages = {}
