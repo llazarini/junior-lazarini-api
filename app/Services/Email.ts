@@ -9,6 +9,7 @@ export class EmailService {
             message
                 .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'Junior Lazarini')
                 .to(to)
+                .cc(Env.get('EMAIL_FROM'))
                 .subject(subject)
                 .htmlView(layout, object);
         })
@@ -20,6 +21,7 @@ export class EmailService {
             message
                 .from(Env.get('EMAIL_FROM'), Env.get('EMAIL_FROM_NAME') || 'Junior Lazarini')
                 .to(to)
+                .cc(Env.get('EMAIL_FROM'))
                 .subject(subject)
                 .text(render);
         })

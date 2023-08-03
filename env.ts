@@ -37,10 +37,11 @@ export default Env.rules({
     S3_REGION: Env.schema.string(),
     S3_ENDPOINT: Env.schema.string.optional(),
 
-	// AWS SES
-	SES_ACCESS_KEY: Env.schema.string(),
-    SES_ACCESS_SECRET: Env.schema.string(),
-    SES_REGION: Env.schema.string(),
+	// SMTP
+	SMTP_HOST: Env.schema.string(),
+	SMTP_PORT: Env.schema.number(),
+	SMTP_USERNAME: Env.schema.string(),
+	SMTP_PASSWORD: Env.schema.string(),
 
 	EMAIL_FROM: Env.schema.string(),
 
