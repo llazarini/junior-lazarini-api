@@ -29,6 +29,8 @@ export default class StoreValidator {
             rules.minLength(4),
             rules.maxLength(13),
         ]),
+        description: schema.string.optional(),
+        interested_in: schema.string(),
         import_as: schema.string.optional(),
     })
 

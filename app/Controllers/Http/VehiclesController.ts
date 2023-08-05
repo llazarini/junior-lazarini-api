@@ -55,7 +55,8 @@ export default class VehiclesController {
             .preload('image')
             .preload('images')
             .whereHas('image', () => {})
-            .limit(8);
+            .orderBy('sold_at', 'asc')
+            .limit(30);
         
         return vehicles;
     }

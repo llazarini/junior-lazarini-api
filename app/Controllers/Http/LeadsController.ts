@@ -37,15 +37,19 @@ export default class LeadsController {
         lead.companyId = 1;
         if (!await lead.save()) {
             return response.badRequest({
-                message: "Error when trying to save the register."
+                message: "Ocorreu um erro ao tentar salvar."
             })
         }
+
+        const title = lead.interestedIn === 'mentoring' ? "Mentoria de Importação de Carros" : (
+            lead.interestedIn === 'vehicle' ? `Interesse em ${lead.description}` : "E-book de Importação de Carros"
+        )
         
         // Envia o email para o lead
-        await EmailService.send(lead.email, 'Mentoria de Importação de Carros', 'emails/newLeadMentoring', lead)
+        await EmailService.send(lead.email, title, `emails/leads/${lead.interestedIn}`, lead)
 
         return {
-            message: "Success when saving the register."
+            message: "Sucesso ao cadastrar lead."
         }
     }
 }
