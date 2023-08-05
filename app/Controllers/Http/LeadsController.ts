@@ -49,7 +49,8 @@ export default class LeadsController {
         await EmailService.send(lead.email, title, `emails/leads/${lead.interestedIn}`, lead)
 
         return {
-            message: "Sucesso ao cadastrar lead."
+            message: "Sucesso ao cadastrar lead.",
+            id: lead.id,
         }
     }
 }
