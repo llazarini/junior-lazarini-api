@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Brand from 'App/Models/Brand';
+import Fuel from 'App/Models/Fuel';
 import Model from 'App/Models/Model';
 import Optional from 'App/Models/Optional';
 import Vehicle from 'App/Models/Vehicle';
@@ -84,12 +85,29 @@ export default class VehiclesController {
         const models = await Model.all();
         const vehicleTypes = await VehicleType.all();
         const optionals = await Optional.all();
+        const fuels = await Fuel.all();
+        const transmissions = [
+            { name: 'Manual', id: 'manual' },
+            { name: 'Automático', id: 'automatic' },
+        ]
+        const doors = [
+            { name: '1 Portas', id: 1 },
+            { name: '2 Portas', id: 2 },
+            { name: '3 Portas', id: 3 },
+            { name: '4 Portas', id: 4 },
+            { name: '5 Portas', id: 5 },
+            { name: '6 Portas', id: 6 },
+            { name: '7 Portas', id: 7 },
+        ]
         
         return {
             brands,
             models,
             vehicleTypes,
             optionals,
+            fuels, 
+            transmissions,
+            doors
         }
     }
 

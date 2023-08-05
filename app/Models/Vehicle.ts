@@ -75,6 +75,24 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	@column()
 	public description: string;
 
+	@column()
+	public engineCylinderCapacity: string;
+
+	@column()
+	public enginePower: string;
+
+	@column()
+	public doorCount: number;
+
+	@column()
+	public seatsCount: number;
+
+	@column()
+	public ownersCount: number;
+
+	@column()
+	public origin: string;
+
 	@column.dateTime({ autoCreate: true })
 	public createdAt: DateTime;
 

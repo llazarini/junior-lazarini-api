@@ -36,7 +36,9 @@ export default class AuthController {
 
         try {
             const token = await auth.use('api')
-                .attempt(email, password)
+                .attempt(email, password, {
+                    expiresIn: '60 mins'
+                })
             const user = await User.query()
                 .preload('userType')
                 .where('email', email)
@@ -68,39 +70,39 @@ export default class AuthController {
     }
 
     public async changePassword({auth, request, response}){
-            let currentPassword= request.input('current_password');
-            const user = await User.find(auth.user.id);
-            let newPassword = request.input("new_password");
-            let newPasswordConfirmation = request.input("new_password_confirmation");
-            if(!user){
-                return response.badRequest({  message: "This user does not exist."})
-  
+        let currentPassword= request.input('current_password');
+        const user = await User.find(auth.user.id);
+        let newPassword = request.input("new_password");
+        let newPasswordConfirmation = request.input("new_password_confirmation");
+        if(!user){
+            return response.badRequest({  message: "This user does not exist."})
+
+        }
+        if (currentPassword) {
+            const isValid= await Hash.verify(user.password, currentPassword)
+            if(!isValid){
+                return response.badRequest({  message: "Please re-type current password."})
             }
-            if (currentPassword) {
-                const isValid= await Hash.verify(user.password, currentPassword)
-                if(!isValid){
-                    return response.badRequest({  message: "Please re-type current password."})
-                }
-            }
-            if(currentPassword===newPassword){
-                return response.badRequest({
-                    message: "Cannot use already existing password.",
-                });
-            }
-            if (newPassword !== newPasswordConfirmation) {
-                return response.badRequest({
-                    message: "The new password fields do not match.",
-                });
-            }     
-            user.password = newPassword;
-            if (!(await user.save())) {
-                return response.badRequest({
-                    message: "An error occured when trying to save the user.",
-                });
-            }
-            return {
-                message: "Your password was successfully changed.",
-            };
+        }
+        if(currentPassword===newPassword){
+            return response.badRequest({
+                message: "Cannot use already existing password.",
+            });
+        }
+        if (newPassword !== newPasswordConfirmation) {
+            return response.badRequest({
+                message: "The new password fields do not match.",
+            });
+        }     
+        user.password = newPassword;
+        if (!(await user.save())) {
+            return response.badRequest({
+                message: "An error occured when trying to save the user.",
+            });
+        }
+        return {
+            message: "Your password was successfully changed.",
+        };
     }
 
     /**
