@@ -31,6 +31,9 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     @column()
     public interestedIn: string
 
+    @column()
+    public comments: string
+
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime
 
