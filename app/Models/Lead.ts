@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
+import Country from './Country'
 
 export default class Lead extends compose(BaseModel, SoftDeletes) {
     @column({ isPrimary: true })
@@ -39,4 +40,7 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
 
     @column.dateTime({ autoCreate: true, autoUpdate: true })
     public updatedAt: DateTime
+
+    @belongsTo(() => Country)
+    public country: BelongsTo<typeof Country>;
 }

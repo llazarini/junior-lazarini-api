@@ -1,10 +1,33 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm';
 import Lead from 'App/Models/Lead';
 import { EmailService } from 'App/Services/Email';
 import StoreValidator from 'App/Validators/Leads/StoreValidator'
 import UpdateValidator from 'App/Validators/Leads/UpdateValidator';
 
 export default class LeadsController {
+
+    /**
+	 * Index
+	 * @param param0
+	 * @returns
+	 */
+	public async index({ request, response }) {
+		const { search, sort, direction } = request.qs();
+		let leads: any = Lead.query()
+            .preload('country')
+
+		if (search) {
+			leads.whereILike("name", `%${search}%`);
+			leads.orWhereILike("code", `%${search}%`);
+		}
+    
+		leads = await leads
+            .orderBy('id', 'desc')
+            .paginate(request.input("page") || 1);
+
+		return response.json(leads);
+	}
 
     public async dataprovider({ request, response }: HttpContextContract) {
         const carTypes = []
