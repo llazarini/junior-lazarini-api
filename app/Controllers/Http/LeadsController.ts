@@ -106,6 +106,7 @@ export default class LeadsController {
             worksheet.addRow({
 				...lead.serialize(),
 				country: lead.country?.name || "N/A",
+                phone: `${lead.country?.countryCode} ${lead.phone}`
 			})
         });
 
