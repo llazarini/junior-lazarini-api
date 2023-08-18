@@ -12,4 +12,8 @@ node ace migration:run --force
 
 cd .. 
 
+# Make dirs
+mkdir /opt/junior-lazarini-api/build/tmp/
+mkdir /opt/junior-lazarini-api/build/tmp/uploads
+
 pm2 reload ecosystem.config.js 
