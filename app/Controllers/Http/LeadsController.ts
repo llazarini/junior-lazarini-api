@@ -1,9 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { ModelQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm';
 import Lead from 'App/Models/Lead';
 import { EmailService } from 'App/Services/Email';
 import StoreValidator from 'App/Validators/Leads/StoreValidator'
 import UpdateValidator from 'App/Validators/Leads/UpdateValidator';
+import Excel from "exceljs";
+import Application from "@ioc:Adonis/Core/Application";
 
 export default class LeadsController {
 
@@ -76,4 +77,42 @@ export default class LeadsController {
             id: lead.id,
         }
     }
+
+    /**
+	 * Export to XLSX
+	 * @param param0
+	 */
+	public async exportExcel({ request, response, auth }) {
+		const workbook = new Excel.Workbook();
+		const worksheet = workbook.addWorksheet("Cars");
+
+		worksheet.columns = [
+			{ header: "Id", key: "id", width: 10 },
+			{ header: "Nome", key: "name", width: 32 },
+			{ header: "E-mail", key: "email", width: 20 },
+			{ header: "País", key: "country", width: 20 },
+			{ header: "Telefone", key: "phone", width: 20 },
+			{ header: "Interessado em", key: "interested_in", width: 20 },
+			{ header: "Importar como", key: "import_as", width: 30 },
+            { header: "Descrição", key: "description", width: 30 },
+			{ header: "Comentários", key: "comments", width: 30 },
+
+		];
+
+		let leads = Lead.query()
+			.preload("country");
+
+		(await leads).map((lead) => {
+            worksheet.addRow({
+				...lead.serialize(),
+				country: lead.country?.name || "N/A",
+			})
+        });
+
+		const workBook = Application.tmpPath(
+			`uploads/leads-excel.xlsx`
+		);
+		await workbook.xlsx.writeFile(workBook);
+		response.download(workBook);
+	}
 }
