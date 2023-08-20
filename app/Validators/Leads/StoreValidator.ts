@@ -16,7 +16,7 @@ export default class StoreValidator {
             rules.exists({ table: "countries", column: "id" }),
         ]),
         name: schema.string([
-            rules.alpha({ allow: ['space'] }),
+            //rules.alpha({ allow: ['space'] }),
             rules.maxLength(128)
         ]),
         email: schema.string([
