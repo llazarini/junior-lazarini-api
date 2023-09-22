@@ -6,7 +6,6 @@ export default class StoreValidator {
 
     public schema = schema.create({
         name: schema.string([
-            rules.alpha(),
             rules.maxLength(128)
         ]),
         brand_id: schema.number([

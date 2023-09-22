@@ -13,7 +13,6 @@ export default class UpdateValidator {
             rules.exists({ table: "brands", column: "id" }),
         ]),
         name: schema.string([
-            rules.alpha(),
             rules.maxLength(128)
         ]),
         brand_id: schema.number([
