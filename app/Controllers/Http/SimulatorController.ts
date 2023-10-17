@@ -1,21 +1,36 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Fuel from 'App/Models/Fuel';
 import { ISV } from 'App/Services/ISV';
 
 export default class SimulatorController {
 
-    public async isv({ request, response }: HttpContextContract) { 
-        const { cm3, co2, isGasoleo, carValue, wltp, isHybrid, isHybridPlugin, addExpenses, ue, age } = request.all();
+    public async dataprovider({ request, response }: HttpContextContract) { 
+        return {
+            fuels: await Fuel.all()
+        };
+    }
 
-        console.log(isGasoleo)
+
+    public async isv({ request, response }: HttpContextContract) { 
+        const { cm3, co2, carValue, wltp, addExpenses, ue, age, fuelId } = request.all();
+
+        const fuel = await Fuel.find(fuelId);
+
+        if (!fuel) {
+            return response.badRequest({
+                message: "O combustível não foi informado."
+            })
+        }
+
         const calcs = ISV.calculate({ 
             cm3: +cm3, 
             co2: +co2, 
-            isGasoleo: isGasoleo != '0', 
-            carValue: +carValue, 
+            isGasoleo: fuel.slug == "gas", 
+            carValue: 0, 
             wltp: wltp != '0', 
-            isHybrid: isHybrid != '0', 
-            isHybridPlugin: isHybridPlugin != '0', 
-            addExpenses: addExpenses != '0',
+            isHybrid: fuel.slug == "hybrid", 
+            isHybridPlugin: fuel.slug == "hybrid-plugin", 
+            addExpenses: false,
             age: +age,
             isUE: ue != '0',
         });

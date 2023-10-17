@@ -112,9 +112,9 @@ export class ISV {
 
         // Cálculos preliminares
 
-        // aplicar a tabela de reduções de CO2 WLTP em 2019
+        // aplicar a tabela de reduções de CO2 WLTP em 
         // conforme o escalão do CO2, atribuo uma percentagem de redução 
-        // em 2020 há tabelas exclusivas para WLTP daí que só vou usar estes dados para a simulação de 2019
+        // em 2020 há tabelas exclusivas para WLTP daí que só vou usar estes dados para a simulação de 
 		if (wltp) {
 			if (isGasoleo) {
 				if (DadosISVCO2 <= 79) {
@@ -241,7 +241,7 @@ export class ISV {
 		var ValorISVCO2GasolinaWLTP_ProximoAno = 0;
 	// vou calcular o valor da componente ambiental, o CO2
 		if (DadosISVCO2 > 0) {
-			// cálculo do CO2 em 2019, com os escalões de 2019 que são diferentes dos de 2020 por causa do WLTP
+			// cálculo do CO2 em , com os escalões de  que são diferentes dos de 2020 por causa do WLTP
 			if (DadosISVCO2 <= 79) {
 				ValorISVCO2Gasoleo_EsteAno = (DadosISVCO2 * 5.24) - 398.07;
 				ValorISVCO2Gasolina_EsteAno = (DadosISVCO2 * 4.23) - 391.03;
@@ -633,256 +633,144 @@ export class ISV {
 		// vamos calcular agora o IUC
 
 		
-        // vamos apresentar os resultados na coluna à direita
-		if (DadosISVcm3 > 100 && DadosISVCO2 > 10) {
-    
-			// Se não for UE
-			if (!isUE && age === 0) {
-				return {
-					// coluna este ano
-					resultNaoUE:  +Number(Math.max(ValorISVMinimo,ValorTotalNaoUE_EsteAno)).toFixed(2),
-					resultNaoUECilindrada:  +Number(ValorISVcm3Novo_EsteAno).toFixed(2),
-					resultNaoUETaxas:  "Taxas " + +Number(ValorTaxas).toFixed(2),
-					resultNaoUECO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					resultNaoUEISV:  +Number(ValorISVNovo_EsteAno).toFixed(2),	
-					resultNaoUEIVA:  +Number(ValorIVANaoUE_EsteAno).toFixed(2),
-				}
-			} else if (!isUE) {
-				return {
-					// coluna próximo ano
-					resultNaoUE2019:  +Number(Math.max(ValorISVMinimo,ValorTotalNaoUE_ProximoAno)).toFixed(2),
-					resultNaoUE2019Diferenca:  (ValorTotalNaoUE_DiferencaAnos<0?"<span style='color:green'>":"<span style='color:red'>+") + +Number(ValorTotalNaoUE_DiferencaAnos).toFixed(2) + "€</span>",
-					resultNaoUECilindrada2019:  +Number(ValorISVcm3Novo_ProximoAno).toFixed(2),
-					resultNaoUECO22019:  +Number(ValorISVCO2_ProximoAno).toFixed(2),
-					resultNaoUEISV2019:  +Number(ValorISVNovo_ProximoAno).toFixed(2),			
-					resultNaoUETaxas2019:  "Taxas " + +Number(ValorTaxas).toFixed(2),
-					resultNaoUEIVA2019:  +Number(ValorIVANaoUE_ProximoAno).toFixed(2),
-				}
+  
+		// Se não for UE
+		if (!isUE && age === 0) {
+			return {
+				// coluna este ano
+				resultNaoUE:  +Number(Math.max(ValorISVMinimo,ValorTotalNaoUE_EsteAno)).toFixed(2),
+				resultNaoUECilindrada:  +Number(ValorISVcm3Novo_EsteAno).toFixed(2),
+				resultNaoUETaxas:  "Taxas " + +Number(ValorTaxas).toFixed(2),
+				resultNaoUECO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
+				resultNaoUEISV:  +Number(ValorISVNovo_EsteAno).toFixed(2),	
+				resultNaoUEIVA:  +Number(ValorIVANaoUE_EsteAno).toFixed(2),
 			}
+		} else if (!isUE) {
+			return {
+				// coluna próximo ano
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalNaoUE_ProximoAno)).toFixed(2),
+				resultDiferenca:  (ValorTotalNaoUE_DiferencaAnos<0?"<span style='color:green'>":"<span style='color:red'>+") + +Number(ValorTotalNaoUE_DiferencaAnos).toFixed(2) + "€</span>",
+				resultCilindrada:  +Number(ValorISVcm3Novo_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2_ProximoAno).toFixed(2),
+				resultISV:  +Number(ValorISVNovo_ProximoAno).toFixed(2),			
+				resultTaxas:  +Number(ValorTaxas).toFixed(2),
+				resultIVA:  +Number(ValorIVANaoUE_ProximoAno).toFixed(2),
+			}
+		}
 
-			// Se for UE
-			if (age === 0) {
-				return {
-					resultNovo: +Number(Math.max(ValorISVMinimo,ValorTotalNovo_EsteAno)).toFixed(2),
-					resultNovoCilindrada: +Number(ValorISVcm3Novo_EsteAno).toFixed(2),
-					resultNovoCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					resultNovoISV: +Number(ValorISVNovo_EsteAno).toFixed(2),
-					resultNovoIVA: +Number(ValorIVANovo_EsteAno).toFixed(2),
-	
-					resultNovo2019: +Number(Math.max(ValorISVMinimo,ValorTotalNovo_ProximoAno)).toFixed(2),
-					resultNovoCilindrada2019: +Number(ValorISVcm3Novo_ProximoAno).toFixed(2),
-					resultNovoCO22019L: +Number(ValorISVCO2Novo_ProximoAno).toFixed(2),
-					resultNovoISV2019: +Number(ValorISVNovo_ProximoAno).toFixed(2),
-					resultNovoIVA2019: +Number(ValorIVANovo_ProximoAno).toFixed(2),
-				}
-			} else if (age === 6) {
-				return {
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalAte6Meses_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Ate6Meses_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					resultISV: +Number(ValorISVAte6Meses_EsteAno).toFixed(2),
-					resultIVA: +Number(ValorIVAAte6Meses_EsteAno).toFixed(2),
-	
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalAte6Meses_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Ate6Meses_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Ate6Meses_ProximoAno).toFixed(2),
-					resultISV2019: +Number(ValorISVAte6Meses_ProximoAno).toFixed(2),
-					resultIVA2019: +Number(ValorIVAAte6Meses_ProximoAno).toFixed(2),
-					resultFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalAte6Meses_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 12) {
-				return {
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais6Mesesa_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais6Mesesa_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					
-					// coluna próximo ano
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais6Mesesa_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Mais6Mesesa_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Mais6Mesesa_ProximoAno).toFixed(2),
-					resultMesesFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais6Mesesa_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 2*12) {
-				return {
-					// coluna este ano
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais1a2Anos_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais1a2Anos_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais1a2Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Mais1a2Anos_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Mais1a2Anos_ProximoAno).toFixed(2),
-					resultFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais1a2Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 3*12) {
-				return {
-					// coluna este ano
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais2a3Anos_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais2a3Anos_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais2a3Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Mais2a3Anos_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Mais2a3Anos_ProximoAno).toFixed(2),
-					resultFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais2a3Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 4*12) {
-				return {
-					// coluna este ano
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais3a4Anos_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais3a4Anos_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais3a4Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Mais3a4Anos_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Mais3a4Anos_ProximoAno).toFixed(2),
-					resultFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais3a4Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 5*12) {
-				return {
-					// coluna este ano
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais4a5Anos_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais4a5Anos_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais4a5Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019: +Number(ValorISVcm3Mais4a5Anos_ProximoAno).toFixed(2),
-					resultCO22019: +Number(ValorISVCO2Mais4a5Anos_ProximoAno).toFixed(2),
-					resultFuturo2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais4a5Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 6*12) {
-				return {
-					// coluna este ano
-					result: +Number(Math.max(ValorISVMinimo,ValorTotalMais5a6Anos_EsteAno)).toFixed(2),
-					resultCilindrada: +Number(ValorISVcm3Mais5a6Anos_EsteAno).toFixed(2),
-					resultCO2: +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019: +Number(Math.max(ValorISVMinimo,ValorTotalMais5a6Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais5a6Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais5a6Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais5a6Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 7*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais6a7Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais6a7Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais6a7Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais6a7Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais6a7Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais6a7Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 8*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais7a8Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais7a8Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais7a8Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais7a8Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais7a8Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais7a8Anos_ProximoAnoFuturo)).toFixed(2),
-					
-				}
-			} else if (age < 9*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais8a9Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais8a9Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais8a9Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais8a9Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais8a9Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais8a9Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 10*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais9a10Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais9a10Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais9a10Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais9a10Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais9a10Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais9a10Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 11*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais10a1s_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais10a1s_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais10a1s_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais10a1s_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais10a1s_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais10a1s_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 12*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais11a12Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais11a12Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais11a12Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais11a12Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais11a12Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais11a12Anos_ProximoAnoFuturo)).toFixed(2),
-
-				}
-			} else if (age < 13*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais12a13Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais12a13Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais12a13Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais12a13Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais12a13Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais12a13Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 14*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais13a14Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais13a14Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais13a14Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais13a14Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais13a14Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais13a14Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 15*12) {
-				return {
-					// coluna este ano
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais14a15Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais14a15Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais14a15Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais14a15Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais14a15Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais14a15Anos_ProximoAnoFuturo)).toFixed(2),
-				}
-			} else if (age < 16*12) {
-				return {
-					result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais15Anos_EsteAno)).toFixed(2),
-					resultCilindrada:  +Number(ValorISVcm3Mais15Anos_EsteAno).toFixed(2),
-					resultCO2:  +Number(ValorISVCO2_EsteAno).toFixed(2),
-					// coluna próximo ano			
-					result2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais15Anos_ProximoAno)).toFixed(2),
-					resultCilindrada2019:  +Number(ValorISVcm3Mais15Anos_ProximoAno).toFixed(2),
-					resultCO22019:  +Number(ValorISVCO2Mais15Anos_ProximoAno).toFixed(2),
-					resultFuturo2019:  +Number(Math.max(ValorISVMinimo,ValorTotalMais15Anos_ProximoAnoFuturo)).toFixed(2),
-				}
+		// Se for UE
+		if (age === 0) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalNovo_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Novo_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Novo_ProximoAno).toFixed(2),
+				resultISV: +Number(ValorISVNovo_ProximoAno).toFixed(2),
+				resultIVA: +Number(ValorIVANovo_ProximoAno).toFixed(2),
+			}
+		} else if (age === 6) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalAte6Meses_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Ate6Meses_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Ate6Meses_ProximoAno).toFixed(2),
+				resultISV: +Number(ValorISVAte6Meses_ProximoAno).toFixed(2),
+				resultIVA: +Number(ValorIVAAte6Meses_ProximoAno).toFixed(2),
+			}
+		} else if (age < 12) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais6Mesesa_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Mais6Mesesa_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Mais6Mesesa_ProximoAno).toFixed(2),
+			}
+		} else if (age < 2*12) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais1a2Anos_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Mais1a2Anos_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Mais1a2Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 3*12) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais2a3Anos_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Mais2a3Anos_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Mais2a3Anos_ProximoAno).toFixed(2),
+				resultFuturo: +Number(Math.max(ValorISVMinimo,ValorTotalMais2a3Anos_ProximoAnoFuturo)).toFixed(2),
+			}
+		} else if (age < 4*12) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais3a4Anos_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Mais3a4Anos_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Mais3a4Anos_ProximoAno).toFixed(2),
+				resultFuturo: +Number(Math.max(ValorISVMinimo,ValorTotalMais3a4Anos_ProximoAnoFuturo)).toFixed(2),
+			}
+		} else if (age < 5*12) {
+			return {		
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais4a5Anos_ProximoAno)).toFixed(2),
+				resultCilindrada: +Number(ValorISVcm3Mais4a5Anos_ProximoAno).toFixed(2),
+				resultCO2: +Number(ValorISVCO2Mais4a5Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 6*12) {
+			return {
+				result: +Number(Math.max(ValorISVMinimo,ValorTotalMais5a6Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais5a6Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais5a6Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 7*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais6a7Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais6a7Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais6a7Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 8*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais7a8Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais7a8Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais7a8Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 9*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais8a9Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais8a9Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais8a9Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 10*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais9a10Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais9a10Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais9a10Anos_ProximoAno).toFixed(2),			}
+		} else if (age < 11*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais10a1s_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais10a1s_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais10a1s_ProximoAno).toFixed(2),
+			}
+		} else if (age < 12*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais11a12Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais11a12Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais11a12Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 13*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais12a13Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais12a13Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais12a13Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 14*12) {
+			return {		
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais13a14Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais13a14Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais13a14Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 15*12) {
+			return {		
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais14a15Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais14a15Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais14a15Anos_ProximoAno).toFixed(2),
+			}
+		} else if (age < 16*12) {
+			return {
+				result:  +Number(Math.max(ValorISVMinimo,ValorTotalMais15Anos_ProximoAno)).toFixed(2),
+				resultCilindrada:  +Number(ValorISVcm3Mais15Anos_ProximoAno).toFixed(2),
+				resultCO2:  +Number(ValorISVCO2Mais15Anos_ProximoAno).toFixed(2),
 			}
 		}
 	};
