@@ -1,6 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Fuel from 'App/Models/Fuel';
 import { ISV } from 'App/Services/ISV';
+import { IUC } from 'App/Services/IUC';
+import { DateTime, Duration } from 'luxon';
 
 export default class SimulatorController {
 
@@ -11,8 +13,8 @@ export default class SimulatorController {
     }
 
 
-    public async isv({ request, response }: HttpContextContract) { 
-        const { cm3, co2, carValue, wltp, addExpenses, ue, age, fuelId } = request.all();
+    public async simulate({ request, response }: HttpContextContract) { 
+        let { cm3, co2, carValue, wltp, ue, firstRegistration, fuelId } = request.all();
 
         const fuel = await Fuel.find(fuelId);
 
@@ -21,20 +23,33 @@ export default class SimulatorController {
                 message: "O combustível não foi informado."
             })
         }
+        const calculationYear = 2024
+        firstRegistration = DateTime.fromISO(firstRegistration)
 
-        const calcs = ISV.calculate({ 
+        const isv = ISV.calculate({ 
             cm3: +cm3, 
             co2: +co2, 
-            isGasoleo: fuel.slug == "gas", 
-            carValue: 0, 
+            fuel,
+            carValue: +carValue, 
             wltp: wltp != '0', 
-            isHybrid: fuel.slug == "hybrid", 
-            isHybridPlugin: fuel.slug == "hybrid-plugin", 
-            addExpenses: false,
-            age: +age,
+            firstRegistration,
             isUE: ue != '0',
+            calculationYear,
+        
+        });
+
+        const iuc = IUC.calculate({ 
+            cm3: +cm3, 
+            co2: +co2, 
+            fuel,
+            wltp: wltp != '0', 
+            nedc: !(wltp != '0'), 
+            firstRegistration
         });
     
-        return calcs;
+        return {
+            isv, 
+            iuc
+        };
     }
 }
