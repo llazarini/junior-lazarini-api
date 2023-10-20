@@ -49,9 +49,7 @@ export class IUC {
 				coeficienteAnoMatricula = 1.1;
             } else if (firstRegistration >= DateTime.fromFormat('2010-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2016-01-01', 'yyyy-MM-dd').endOf('year')) {
 				coeficienteAnoMatricula = 1.15;
-            } else if (firstRegistration >= DateTime.fromFormat('2017-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2019-01-01', 'yyyy-MM-dd').endOf('year') && nedc) {
-				coeficienteAnoMatricula = 1.15;
-			} else if (firstRegistration >= DateTime.fromFormat('2017-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd').endOf('year') && wltp) {
+            } else {
 				coeficienteAnoMatricula = 1.15;
 			}
 
@@ -91,6 +89,8 @@ export class IUC {
 				} 
 			};
 			
+			console.log(taxCo2, taxCm3)
+
             // 181 até 250g/km
 			if (co2 >= 181 && co2 <= 250 && (firstRegistration >= DateTime.fromFormat('2017-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd').endOf('year') && wltp || 
                 firstRegistration >= DateTime.fromFormat('2017-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2019-01-01', 'yyyy-MM-dd').endOf('year') && nedc)) {

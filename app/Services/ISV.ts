@@ -193,7 +193,7 @@ export class ISV {
 			[co2Tax, cm3Tax] = this.calculateComponents(calculationYear, cm3, co2, isUE, fuel, age, wltp)
 		}
 
-		const isv = co2Tax + cm3Tax
+		const isv = Math.max(co2Tax + cm3Tax, fuel.slug == "eletric" ? 0 : 100) // Set minimo as 100 euros
 		const taxes = +(isUE ? 0 : 0.1 * carValue).toFixed(2)
 		const iva = isUE ? 0 : 0.23 * (carValue + isv + taxes)
 		const total = +(isv + taxes + iva).toFixed(2)
@@ -215,9 +215,8 @@ export class ISV {
 			cm3Tax = this.applyFuelDiscount(cm3Tax, fuel)
 			cm3Tax = cm3Tax - (cm3Tax * this.calculateCm3AgeDiscount(age)) // Aplica desconto de idade	
 		}
+		
 		console.log("cm3", cm3Tax)
-
-	
 		// Calculo do componente ambiental
 		// co2 = this.applyCo2Reduction(co2, wltp, fuel)
 		let co2Tax = this.calculateCO2(co2, fuel, calculationYear, wltp)
@@ -227,7 +226,9 @@ export class ISV {
 		}
 		console.log("co2", co2Tax)
 
+		co2Tax = Math.max(co2Tax, 0)
+		cm3Tax = Math.max(cm3Tax, 0)
+		
 		return [+co2Tax.toFixed(2), +(cm3Tax).toFixed(2)]
 	}
-
 };
