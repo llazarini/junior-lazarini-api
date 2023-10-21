@@ -8,13 +8,14 @@ export default class SimulatorController {
 
     public async dataprovider({ request, response }: HttpContextContract) { 
         return {
-            fuels: await Fuel.all()
+            fuels: await Fuel.all(),
+            calculationYears: [2023, 2024]
         };
     }
 
 
     public async simulate({ request, response }: HttpContextContract) { 
-        let { cm3, co2, carValue, wltp, ue, firstRegistration, fuelId } = request.all();
+        let { cm3, co2, carValue, wltp, ue, firstRegistration, fuelId, calculationYear } = request.all();
 
         const fuel = await Fuel.find(fuelId);
 
@@ -23,7 +24,6 @@ export default class SimulatorController {
                 message: "O combustível não foi informado."
             })
         }
-        const calculationYear = 2024
         firstRegistration = DateTime.fromISO(firstRegistration)
 
         const isv = ISV.calculate({ 
@@ -34,8 +34,7 @@ export default class SimulatorController {
             wltp: wltp != '0', 
             firstRegistration,
             isUE: ue != '0',
-            calculationYear,
-        
+            calculationYear: +calculationYear,
         });
 
         const iuc = IUC.calculate({ 

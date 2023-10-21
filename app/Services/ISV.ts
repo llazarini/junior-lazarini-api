@@ -174,6 +174,30 @@ export class ISV {
 		return (co2 * selectedRange[fuelName].a) - selectedRange[fuelName].b; 
 	}
 
+	static calculateComponents(calculationYear, cm3, co2, isUE, fuel, age, wltp): any {
+		// Calcula componente cm3
+		let cm3Tax = this.calculateCm3Tax(cm3, calculationYear)
+		if (isUE) {
+			cm3Tax = this.applyFuelDiscount(cm3Tax, fuel)
+			cm3Tax = cm3Tax - (cm3Tax * this.calculateCm3AgeDiscount(age)) // Aplica desconto de idade	
+		}
+		
+		console.log("cm3", cm3Tax)
+		// Calculo do componente ambiental
+		// co2 = this.applyCo2Reduction(co2, wltp, fuel)
+		let co2Tax = this.calculateCO2(co2, fuel, calculationYear, wltp)
+		if (isUE) {
+			co2Tax = co2Tax - Math.abs(co2Tax * this.calculateCo2AgeDiscount(age)) // Aplica desconto de idade
+			co2Tax = this.applyFuelDiscount(co2Tax, fuel);
+		}
+		console.log("co2", co2Tax)
+
+		co2Tax = Math.max(co2Tax, 0)
+		cm3Tax = Math.max(cm3Tax, 0)
+		
+		return [+co2Tax.toFixed(2), +(cm3Tax).toFixed(2)]
+	}
+
     /**
      * Calculate the ISV
      */
@@ -207,28 +231,5 @@ export class ISV {
 			taxes,
 			iva
 		}
-	}
-	static calculateComponents(calculationYear, cm3, co2, isUE, fuel, age, wltp): any {
-		// Calcula componente cm3
-		let cm3Tax = this.calculateCm3Tax(cm3, calculationYear)
-		if (isUE) {
-			cm3Tax = this.applyFuelDiscount(cm3Tax, fuel)
-			cm3Tax = cm3Tax - (cm3Tax * this.calculateCm3AgeDiscount(age)) // Aplica desconto de idade	
-		}
-		
-		console.log("cm3", cm3Tax)
-		// Calculo do componente ambiental
-		// co2 = this.applyCo2Reduction(co2, wltp, fuel)
-		let co2Tax = this.calculateCO2(co2, fuel, calculationYear, wltp)
-		if (isUE) {
-			co2Tax = co2Tax - Math.abs(co2Tax * this.calculateCo2AgeDiscount(age)) // Aplica desconto de idade
-			co2Tax = this.applyFuelDiscount(co2Tax, fuel);
-		}
-		console.log("co2", co2Tax)
-
-		co2Tax = Math.max(co2Tax, 0)
-		cm3Tax = Math.max(cm3Tax, 0)
-		
-		return [+co2Tax.toFixed(2), +(cm3Tax).toFixed(2)]
 	}
 };
