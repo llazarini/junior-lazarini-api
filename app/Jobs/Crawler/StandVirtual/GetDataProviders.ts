@@ -16,7 +16,7 @@ export default class GetDataProviders implements JobContract {
         options.addArguments("--headless", "--window-size=1280,1200");
 
         const driver = await new Builder()
-            .forBrowser('firefox')
+            .forBrowser('chrome')
             .setChromeOptions(options)
             .build();
         
@@ -65,7 +65,7 @@ export default class GetDataProviders implements JobContract {
     ) {
 
         console.log("Opening make dialog")
-        const brandSelect = driver.findElement(By.css('input[placeholder="Marca"], input[value="Marca"],  input[value="' + previusBrand.text + '"]'));
+        const brandSelect = driver.findElement(By.css('input[placeholder="Marca"], input[value="Marca"],  input[value="' + previusBrand.brand + '"]'));
         await driver.wait(until.elementIsVisible(brandSelect), 3000);
         await brandSelect.click()
 
