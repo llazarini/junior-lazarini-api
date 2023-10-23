@@ -14,11 +14,9 @@ export default class GetDataProviders implements JobContract {
 
         const options = new Options();
 
-        options.addArguments('--no-sandbox')
-        options.addArguments('--headless')
-        options.addArguments('--disable-dev-shm-usage')
-
-        options.excludeSwitches("disable-popup-blocking", "enable-automation");
+        options.addArguments('--no-sandbox', '--headless', '--disable-gpu', '--disable-dev-shm-usage')
+        options.excludeSwitches("disable-popup-blocking", "enable-automation"); 
+        options.set("useAutomationExtension", false);
 
         //options.addArguments("--headless");
         //options.addArguments("--window-size=1280,1200")
