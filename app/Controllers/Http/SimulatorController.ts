@@ -1,8 +1,11 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Bull from '@ioc:Rocketseat/Bull';
+import GetDataProviders from 'App/Jobs/Crawler/StandVirtual/GetDataProviders';
 import Fuel from 'App/Models/Fuel';
 import { ISV } from 'App/Services/ISV';
 import { IUC } from 'App/Services/IUC';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
+import { Builder, By } from 'selenium-webdriver'
 
 export default class SimulatorController {
 
@@ -52,5 +55,9 @@ export default class SimulatorController {
             isv, 
             iuc
         };
+    }
+
+    public async crawler() {
+        Bull.add(new GetDataProviders().key, {})
     }
 }
