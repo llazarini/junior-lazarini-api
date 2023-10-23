@@ -13,7 +13,7 @@ export class IUC {
      * @param addExpenses 
      * @returns 
      */
-    static calculate ({ firstRegistration, cm3, co2, fuel, wltp, nedc }: { firstRegistration: DateTime, cm3: number, co2: number, fuel: Fuel, wltp: boolean, nedc: boolean})
+    static calculate ({ firstRegistration, cm3, co2, fuel, wltp, nedc, log }: { firstRegistration: DateTime, cm3: number, co2: number, fuel: Fuel, wltp: boolean, nedc: boolean, log: boolean })
     {  
         const currentYear = DateTime.now().year
         let coeficienteAnoMatricula = 0
@@ -89,7 +89,9 @@ export class IUC {
 				} 
 			};
 			
-			console.log(taxCo2, taxCm3)
+			if (log) {
+				console.log(taxCo2, taxCm3)
+			}
 
             // 181 até 250g/km
 			if (co2 >= 181 && co2 <= 250 && (firstRegistration >= DateTime.fromFormat('2017-01-01', 'yyyy-MM-dd') && firstRegistration <= DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd').endOf('year') && wltp || 

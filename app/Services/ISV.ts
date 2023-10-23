@@ -95,9 +95,9 @@ export class ISV {
 
 	static calculateCm3Tax(cm3: number, calculationYear: number) {
 		const taxes = [
-			{ year: 2023, cm3: 1000, calc: (cm3) => (cm3 * 1.00) - 777.50, },
-			{ year: 2023, cm3: 1250, calc: (cm3) => (cm3 * 1.08) - 779.02, },
-			{ year: 2023, cm3: Infinity, calc: (cm3) => (cm3 * 5.13) - 5672.97, },
+			{ year: 2023, cm3: 1000, calc: (cm3) => (cm3 * 1.04) - 808.60, },
+			{ year: 2023, cm3: 1250, calc: (cm3) => (cm3 * 1.12) - 810.18, },
+			{ year: 2023, cm3: Infinity, calc: (cm3) => (cm3 * 5.34) - 5899.89, },
 
 
 			{ year: 2024, cm3: 1000, calc: (cm3) => (cm3 * 1.09) - 849.03, },
@@ -202,13 +202,15 @@ export class ISV {
      * Calculate the ISV
      */
     static calculate ({
-        cm3, co2, wltp, fuel, firstRegistration, isUE, calculationYear, carValue
+        cm3, co2, wltp, fuel, firstRegistration, isUE, calculationYear, carValue, log
     }: {
-        cm3: number, co2: number, wltp: boolean, fuel: Fuel, firstRegistration: DateTime, isUE: boolean, calculationYear: number, carValue: number
+        cm3: number, co2: number, wltp: boolean, fuel: Fuel, firstRegistration: DateTime, isUE: boolean, calculationYear: number, carValue: number, log: boolean
     })
     {  
 		let age = +DateTime.now().diff(firstRegistration).as('months').toFixed(2);
-		console.log("Idade", age, age / 12)
+		if (log) {
+			console.log("Idade", age, age / 12)
+		}
 		if (!isUE) {
 			age = 0
 		}
