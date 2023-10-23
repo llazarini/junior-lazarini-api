@@ -13,8 +13,8 @@ export default class GetDataProviders implements JobContract {
         console.info("Getting data from stand virtual")
 
         const options = new Options();
-        options.addArguments('--headless')
         options.addArguments('--no-sandbox')
+        options.addArguments('--headless')
         options.addArguments('--disable-dev-shm-usage')
         //options.addArguments("--headless");
         //options.addArguments("--window-size=1280,1200")
