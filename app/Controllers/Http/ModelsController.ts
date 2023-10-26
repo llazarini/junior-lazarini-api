@@ -66,4 +66,14 @@ export default class ModelsController {
 
         return { brands }
     }
+
+    public async delete({ request, response }: HttpContextContract) {
+        const id = request.param('id');
+        const model = await Model.find(id);
+
+        await model?.delete();
+        return {
+            message: 'O modelo foi removido com sucesso.'
+        }
+    }
 }

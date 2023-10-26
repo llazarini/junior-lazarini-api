@@ -58,4 +58,18 @@ export default class BrandsController {
             message: "Success when saving the register."
         }
     }
+
+    public async delete({ request, response }: HttpContextContract) {
+        const id = request.param('id');
+        const brand = await Brand.find(id);
+        if (!brand) {
+            return response.badRequest({
+                message: 'Não foi possível encontrar a marca.'
+            })
+        }
+        await brand.delete();
+        return {
+            message: 'A marca foi removida com sucesso.'
+        }
+    }
 }

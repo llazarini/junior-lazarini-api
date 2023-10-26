@@ -8,7 +8,7 @@ import VehicleOptional from 'App/Models/VehicleOptional';
 import VehicleType from 'App/Models/VehicleType';
 import StoreValidator from 'App/Validators/Vehicles/StoreValidator'
 import UpdateValidator from 'App/Validators/Vehicles/UpdateValidator';
-import { HttpRequest } from 'aws-sdk';
+import { DateTime } from 'luxon';
 
 export default class VehiclesController {
 
@@ -180,6 +180,30 @@ export default class VehiclesController {
         }
     }
 
+    public async sold({ request, response }: HttpContextContract) {
+        const id = request.param('id');
+        const vehicle = await Vehicle.find(id);
+        if (!vehicle) {
+            return response.badRequest({
+                message: 'ID não encontrado.'
+            })
+        }
+        if (!vehicle.soldAt) {
+            vehicle.soldAt = DateTime.local()
+        } else {
+            vehicle.soldAt = null;
+        }
+        if (!await vehicle.save()) {
+            return response.badRequest({
+                message: 'Não foi possível setar a data.'
+            })
+        }
+        return {
+            message: 'Vehicle successfully removed.'
+        }
+    }
+
+
     private async updateOptionals(vehicle: Vehicle, request: any) {
         await VehicleOptional
             .query()
@@ -201,7 +225,11 @@ export default class VehiclesController {
     public async delete({ request, response }: HttpContextContract) {
         const id = request.param('id');
         const vehicle = await Vehicle.find(id);
-
+        if (!vehicle) {
+            return response.badRequest({
+                message: 'ID não encontrado.'
+            })
+        }
         await vehicle?.delete();
         return {
             message: 'Vehicle successfully removed.'

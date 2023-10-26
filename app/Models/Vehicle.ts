@@ -70,9 +70,6 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 	public seats: number;
 
 	@column()
-	public soldAt: DateTime;
-
-	@column()
 	public description: string;
 
 	@column()
@@ -92,6 +89,9 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 
 	@column()
 	public origin: string;
+
+	@column.dateTime()
+	public soldAt: DateTime | null;
 
 	@column.dateTime({ autoCreate: true })
 	public createdAt: DateTime;
@@ -159,6 +159,5 @@ export default class Vehicle extends compose(BaseCompany, SoftDeletes) {
 			.update({
 				imageable_id: vehicle.id,
 			})
-	}
-	
+	}	
 }

@@ -33,6 +33,8 @@ export default class GetDataProviders implements JobContract {
 
         try {
             await driver.get('https://www.standvirtual.com/');
+            
+            await this.accept(driver)
             const brands = await this.getMakes(driver);
             console.log(brands)
 
@@ -127,13 +129,25 @@ export default class GetDataProviders implements JobContract {
         return 'span.' + (await brandExample.getAttribute('class')).split(' ')[0]
     }
 
-    private async getMakes(driver: WebDriver) {
+    private async accept(driver: WebDriver) {
         // Click on cache
         console.log("Clicking on cache")
-        const acceptCache = driver.findElement(By.id('onetrust-accept-btn-handler'))
-        await driver.wait(until.elementIsVisible(acceptCache), 3000);
-        await acceptCache.click()
+        await driver.sleep(3000)
+        try {
+            const acceptCache = driver.findElement(By.id('onetrust-accept-btn-handler'))
+            await driver.wait(until.elementIsVisible(acceptCache), 3000);
+            await acceptCache.click()
+        } catch (except) {
+            console.log(except)
+            const acceptCache = driver.findElement(By.xpath("//button[contains(., 'Aceito')]"))
+            await driver.wait(until.elementIsVisible(acceptCache), 3000);
+            await acceptCache.click()
+        }
 
+    }
+
+    private async getMakes(driver: WebDriver) {
+        
         // Open makes dialog
         console.log("Opening makes")
         const brandElement = driver.findElement(By.css('input[placeholder="Marca"], input[value="Marca"]'));

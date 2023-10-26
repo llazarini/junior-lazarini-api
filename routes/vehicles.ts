@@ -12,6 +12,7 @@ Route.group(() => {
 		Route.post("/store", "VehiclesController.store");
 		Route.put("/update", "VehiclesController.update");
 		Route.delete("/delete/:id", "VehiclesController.delete");
+		Route.put("/sold/:id", "VehiclesController.sold");
 	})
 	.middleware(['auth'])
 })

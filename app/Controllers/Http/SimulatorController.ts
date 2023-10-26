@@ -5,7 +5,6 @@ import Fuel from 'App/Models/Fuel';
 import { ISV } from 'App/Services/ISV';
 import { IUC } from 'App/Services/IUC';
 import { DateTime } from 'luxon';
-import { Builder, By } from 'selenium-webdriver'
 
 export default class SimulatorController {
 
