@@ -170,7 +170,7 @@ export class ISV {
 		if (!selectedRange) {
 			throw new Exception("Não foi possível encontrar o range de cálculo para componente de Co2")
 		}
-		console.log(selectedRange, fuelName)
+		console.log("ISV ->", selectedRange, fuelName)
 		return (co2 * selectedRange[fuelName].a) - selectedRange[fuelName].b; 
 	}
 
@@ -182,7 +182,7 @@ export class ISV {
 			cm3Tax = cm3Tax - (cm3Tax * this.calculateCm3AgeDiscount(age)) // Aplica desconto de idade	
 		}
 		
-		console.log("cm3", cm3Tax)
+		console.log("ISV -> cm3", cm3Tax)
 		// Calculo do componente ambiental
 		// co2 = this.applyCo2Reduction(co2, wltp, fuel)
 		let co2Tax = this.calculateCO2(co2, fuel, calculationYear, wltp)
@@ -190,7 +190,7 @@ export class ISV {
 			co2Tax = co2Tax - Math.abs(co2Tax * this.calculateCo2AgeDiscount(age)) // Aplica desconto de idade
 			co2Tax = this.applyFuelDiscount(co2Tax, fuel);
 		}
-		console.log("co2", co2Tax)
+		console.log("ISV -> co2", co2Tax)
 
 		co2Tax = Math.max(co2Tax, 0)
 		cm3Tax = Math.max(cm3Tax, 0)
@@ -224,7 +224,7 @@ export class ISV {
 		const iva = isUE ? 0 : 0.23 * (carValue + isv + taxes)
 		const total = +(isv + taxes + iva).toFixed(2)
 
-		console.log("ISV", isv)
+		console.log("ISV -> ", isv)
 		return {
 			total,
 			isv,

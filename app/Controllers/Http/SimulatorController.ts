@@ -38,7 +38,7 @@ export default class SimulatorController {
             firstRegistration,
             isUE: ue != '0',
             calculationYear: +calculationYear,
-            log: true
+            log: false
         });
 
         const iuc = IUC.calculate({ 
@@ -48,7 +48,7 @@ export default class SimulatorController {
             wltp: wltp != '0', 
             nedc: !(wltp != '0'), 
             firstRegistration,
-            log: false
+            log: true
         });
     
         return {

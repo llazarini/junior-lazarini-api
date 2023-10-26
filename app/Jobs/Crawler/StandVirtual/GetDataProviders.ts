@@ -14,18 +14,23 @@ export default class GetDataProviders implements JobContract {
 
         const options = new Options();
 
-        options.addArguments('--no-sandbox', '--headless', '--disable-gpu', '--disable-dev-shm-usage')
+        options.addArguments('--no-sandbox', /*'--headless',*/ '--disable-gpu', '--disable-dev-shm-usage')
         options.excludeSwitches("disable-popup-blocking", "enable-automation"); 
         options.set("useAutomationExtension", false);
 
-        //options.addArguments("--headless");
-        //options.addArguments("--window-size=1280,1200")
-
+        await ExtractionSummary
+            .query()
+            .whereBetween('extractionDate', [
+                DateTime.now().startOf('day').toJSDate(), 
+                DateTime.now().endOf('day').toJSDate()
+            ])
+            .delete()
+        
         const driver = await new Builder()
             .forBrowser('chrome')
             .setChromeOptions(options)
             .build();
-        
+
         try {
             await driver.get('https://www.standvirtual.com/');
             const brands = await this.getMakes(driver);
@@ -37,13 +42,6 @@ export default class GetDataProviders implements JobContract {
                 console.log(models)
 
                 await Promise.allSettled(models.map(async (item) => {
-                    console.log({
-                        model: item.model,
-                        brand: brands[i].brand,
-                        extractionDate: DateTime.now(),
-                        brandTotal: brands[i].vehiclesAvailable,
-                        modelTotal: item.vehiclesAvailable
-                    })
                     await ExtractionSummary.create({
                         source: 'standvirtual',
                         model: item.model,
@@ -59,7 +57,7 @@ export default class GetDataProviders implements JobContract {
             console.error(exception)
         } finally {
             await driver.sleep(3000)
-            //await driver.close()
+            // await driver.close()
         }
     }
 
@@ -71,24 +69,25 @@ export default class GetDataProviders implements JobContract {
     ) {
 
         console.log("Opening make dialog")
-        const brandSelect = driver.findElement(By.css('input[placeholder="Marca"], input[value="Marca"],  input[value="' + previusBrand.brand + '"]'));
+        const brandSelect = driver.findElement(By.css('input[placeholder="Marca"], input[value="Marca"],  input[value="' + previusBrand.text + '"]'));
         await driver.wait(until.elementIsVisible(brandSelect), 3000);
         await brandSelect.click()
 
-        await driver.sleep(1000)
+        await driver.sleep(500)
 
-        console.log("Searching make ")
+        console.log("Searching make " + brand.brand)
         const brandElement = driver.findElement(By.xpath("//span[contains(., '" + brand.brand + "')]"))
         await driver.wait(until.elementIsVisible(brandElement), 3000);
         await brandElement.click()
 
+        await driver.sleep(500)
 
         console.log("Opening Model dialog")
         const makeElement = driver.findElement(By.css('input[placeholder="Modelo"], input[value="Modelo"]'));
         await driver.wait(until.elementIsVisible(makeElement), 3000);
         await makeElement.click()
 
-        await driver.sleep(1000)
+        await driver.sleep(500)
 
         const optionClass = await this.getOptionElement(driver);
 
@@ -97,6 +96,7 @@ export default class GetDataProviders implements JobContract {
 
         const promises: any = await Promise.allSettled(modelElements.map(this.getModelDetails))
 
+        console.log("Closing form")
         const title = await driver.findElement(By.css('form')) // Close everything
         await title.click()
 
@@ -114,8 +114,16 @@ export default class GetDataProviders implements JobContract {
     }
 
     private async getOptionElement(driver: WebDriver) {
-        const brandExample = driver.findElement(By.xpath("//span[contains(., 'Selecionar')]"))
-        await driver.wait(until.elementIsVisible(brandExample), 10000);
+        console.log("Getting option element")
+        let brandExample;
+        try {
+            brandExample = driver.findElement(By.xpath("//span[contains(., 'Selecionar')]"))
+            await driver.wait(until.elementIsVisible(brandExample), 10000);
+        } catch(exception) {
+            console.log("Not able to get with xpath")
+            brandExample = driver.findElement(By.css('span role["presentation"]'))
+            await driver.wait(until.elementIsVisible(brandExample), 10000);
+        }
         return 'span.' + (await brandExample.getAttribute('class')).split(' ')[0]
     }
 
@@ -145,6 +153,7 @@ export default class GetDataProviders implements JobContract {
 
         const promises: any = await Promise.allSettled(brandElements.map(this.getBrandDetails))
 
+        console.log("Finding form element")
         const title = await driver.findElement(By.css('form'))
         await title.click() // Close everything
 
