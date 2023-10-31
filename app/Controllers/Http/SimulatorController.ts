@@ -1,10 +1,14 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Bull from '@ioc:Rocketseat/Bull';
-import GetDataProviders from 'App/Jobs/Crawler/StandVirtual/GetDataProviders';
+import Vehicles from 'App/Crawler/CustoJusto/Vehicles';
+import Crawler from 'App/Jobs/CrawlerJob';
+import Brand from 'App/Models/Brand';
+import Extraction from 'App/Models/Extraction/Extraction';
 import Fuel from 'App/Models/Fuel';
 import { ISV } from 'App/Services/ISV';
 import { IUC } from 'App/Services/IUC';
 import { DateTime } from 'luxon';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class SimulatorController {
 
@@ -57,6 +61,27 @@ export default class SimulatorController {
     }
 
     public async crawler() {
-        Bull.add(new GetDataProviders().key, {})
+        // 
+        // Bull.add(new StandVirtualGetBrands().key, { getModels: true })
+        
+        const extractionHash = uuidv4()
+
+        const extraction = await Extraction.create({
+            extractionHash,
+            source: 'custo-justo',
+            status: 'processing',
+            extractionTotal: (await Brand.all()).length,
+        })
+
+        const brands = await Brand.query().limit(1)
+        brands.map(brand => Bull.add(new Crawler().key, { 
+            crawler: 'CustoJusto/Vehicles', 
+            extractionId: 
+            extraction.id, 
+            brandId: brand.id 
+        }))
+
+        //Bull.add(new GetCustoJustoVehicles().key, { extractionId: extraction.id, brandId: brands[3].id })
+        
     }
 }

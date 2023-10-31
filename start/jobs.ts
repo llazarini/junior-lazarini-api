@@ -1,6 +1,6 @@
 const jobs = [
     'App/Jobs/CreateFacebookPost',
-    'App/Jobs/Crawler/StandVirtual/GetDataProviders',
+    'App/Jobs/CrawlerJob',
 ]
 
 export default jobs

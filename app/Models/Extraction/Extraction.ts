@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class ExtractionSummary extends BaseModel {
+export default class Extraction extends BaseModel {
     @column({ isPrimary: true })
     public id: number
 
@@ -9,24 +9,21 @@ export default class ExtractionSummary extends BaseModel {
     public source: string
 
     @column()
-    public brandId: number
+    public extractionHash: string
 
     @column()
-    public modelId: number
+    public status: string
 
     @column()
-    public model: string
+    public extractionFailed: number
 
     @column()
-    public brand: string
+    public extractionSucceeded: number
 
     @column()
-    public modelTotal: number
+    public extractionTotal: number
 
-    @column()
-    public brandTotal: number
-
-    @column.dateTime()
+    @column.dateTime({ autoCreate: true })
     public extractionDate: DateTime
 
     @column.dateTime({ autoCreate: true })
