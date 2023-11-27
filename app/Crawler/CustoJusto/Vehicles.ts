@@ -8,7 +8,6 @@ import Model from 'App/Models/Model';
 import Extraction from 'App/Models/Extraction/Extraction';
 import Bull from '@ioc:Rocketseat/Bull';
 import CrawlerJob from 'App/Jobs/CrawlerJob';
-import Detail from './Detail';
 
 export default class Vehicles extends Crawler {
     public source = "custo-justo"
@@ -22,8 +21,10 @@ export default class Vehicles extends Crawler {
         if (!data.brandId || !data.extractionId) {
             throw Error("The brand ID and extraction ID are needed.")
         }
+
         const brand = await Brand.find(data.brandId)
-        const extraction = await Extraction.find(data.extractionId)
+        let extraction = await Extraction.find(data.extractionId)
+
         if (!brand || !extraction) {
             throw Error("The brand or extraction was not found.")
         }
@@ -41,18 +42,22 @@ export default class Vehicles extends Crawler {
             const autoComplete = await this.driver.findElement(By.id('searchAutocomplete'))
             if (await autoComplete.getAttribute('value') !== '') {
                 Logger.warn(`Brand not found in the site ${brand.slug}. Skipping`)
+                await this.updateSuccess(data.extractionId)
                 return;
             }
 
+            // For each brand get vehicles
             for (let i = 1; i <= pages; i++) {
                 await this.getArticles(extraction, brand, i)
             }
 
+            await this.updateSuccess(extraction.id)
         } catch (exception) {
             console.error(exception)
+            await this.updateSuccess(extraction.id, false)
+
             throw new Error(exception)
         } finally {
-            await this.driver.sleep(500);
             await this.driver.quit()
         }
     }
@@ -77,6 +82,7 @@ export default class Vehicles extends Crawler {
         const articles = await this.driver.findElements(By.css('.results_listing'))
 
         Logger.info(`Items found ${articles.length}`)
+
         for (let article of articles) {
             const { price, location, year, version } = this.parseVehicleText(await article.getText())
             const link = await article.findElement(By.xpath("./..")).getAttribute('href')
@@ -106,7 +112,7 @@ export default class Vehicles extends Crawler {
                     modelId: model?.id,
                     brandId: brand.id,
                     brandDescription: brand.name,
-                    locationState: location,
+                    locationState: "",
                     version,
                     mileage: undefined,
                     fuelId: undefined,
@@ -136,7 +142,11 @@ export default class Vehicles extends Crawler {
             if (line.split(' - ').length == 2 && !isNaN(+line.split(' - ')[1])) {
                 const twoLetterYear = +line.split(' - ')[1]
                 version = line.split(' - ')[0]
-                year = twoLetterYear <= DateTime.now().year + 1 ? 2000 + twoLetterYear : 1900 + twoLetterYear;
+                if (twoLetterYear <= 23) {
+                    year = 2000 + twoLetterYear
+                } else (
+                    year = 1900 + twoLetterYear
+                )
             } else if (line.split(' - ').length == 2) {
                 location = line.split(' - ')[1]
             } else if (line.indexOf('€') > 0) {

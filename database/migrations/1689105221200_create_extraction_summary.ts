@@ -39,6 +39,7 @@ export default class extends BaseSchema {
             table.string('engine_power');
             table.string('engine_cylinder_capacity');
             table.string('featured_image');
+            table.string('color');
 
             table.string('location');
             table.string('location_state');

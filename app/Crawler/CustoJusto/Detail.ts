@@ -4,13 +4,13 @@ import Logger from '@ioc:Adonis/Core/Logger'
 import ExtractionVehicle from 'App/Models/Extraction/ExtractionVehicle';
 import Fuel from 'App/Models/Fuel';
 import Model from 'App/Models/Model';
+import { string } from '@ioc:Adonis/Core/Helpers'
+import { DateTime } from 'luxon';
 
 export default class Detail extends Crawler {
     public source = "custo-justo"
-    public concurrency = 10;
 
     public async handle(data) {
-        await this.loadDriver();
         const extractionVehicle = await ExtractionVehicle.find(data.extractionVehicleId || 0)
 
         if (!extractionVehicle) {
@@ -23,6 +23,7 @@ export default class Detail extends Crawler {
         }
         
         try {
+            await this.loadDriver();
             await this.driver.get(`${extractionVehicle.link}`);
             await this.accept()
 
@@ -32,29 +33,42 @@ export default class Detail extends Crawler {
             } catch {
                 Logger.warn("Not possible to get featured image")
             }
-            
-            const description = await this.getDescriptions()
-            const model = await Model.updateOrCreate({
-                name: description.modelDescription,
-                brandId: extractionVehicle.brandId,
-            }, {
-                name: description.modelDescription,
-                brandId: extractionVehicle.brandId,
-            })
-            const fuel = await Fuel.findBy('slug', description.fuelType)
-
-            extractionVehicle.merge(description)
-            if (model) {
-                extractionVehicle.modelId = model?.id
+            try {
+                const description = await this.getDescriptions()
+                const model = await Model.updateOrCreate({
+                    name: description.modelDescription,
+                    brandId: extractionVehicle.brandId,
+                }, {
+                    name: description.modelDescription,
+                    brandId: extractionVehicle.brandId,
+                })
+                const link = extractionVehicle.link.replace('https://www.custojusto.pt/', '')
+                const locationState = this.getLocationState(string.sentenceCase(link.substring(0, link.indexOf('/'))))
+    
+                const fuel = await Fuel.findBy('slug', description.fuelType)
+    
+                extractionVehicle.merge(description)
+                if (locationState) {
+                    extractionVehicle.locationState = locationState;
+                }
+                if (model) {
+                    extractionVehicle.modelId = model?.id
+                }
+                if (fuel) {
+                    extractionVehicle.fuelId = fuel.id
+                }
+                if (image) {
+                    extractionVehicle.featuredImage = image;
+                }
+    
+                extractionVehicle.detailsExtractionComplete = true;
+            } catch {
+                const kaput = await this.driver.findElement(By.css('.kaput'))
+                if ((await kaput.getText()).indexOf("não está activo")) {
+                    extractionVehicle.removedDate = DateTime.now();
+                }
             }
-            if (fuel) {
-                extractionVehicle.fuelId = fuel.id
-            }
-            if (image) {
-                extractionVehicle.featuredImage = image;
-            }
-
-            extractionVehicle.detailsExtractionComplete = true;
+        
             Logger.info(extractionVehicle?.id.toString())
             if (!await extractionVehicle.save()) {
                 throw new Error("Not possible to save the vehicle")
@@ -64,7 +78,6 @@ export default class Detail extends Crawler {
             console.error(exception)
             throw new Error(exception)
         } finally {
-            //await this.driver.close();
             await this.driver.quit()
         }
     }
@@ -73,9 +86,7 @@ export default class Detail extends Crawler {
         const description = await this.driver.findElement(By.css('.gbody'));
         const lines = (await description.getText()).split("\n")
         let year, mileage, transmission, fuelType, brandDescription, 
-            modelDescription, location, locationState, engineCylinderCapacity, enginePower;
-
-        console.log(lines)
+            modelDescription, location, locationState, engineCylinderCapacity, enginePower, color;
 
         lines.map((line, i) => {
             if (line.trim() == "Ano do modelo" && !isNaN(+lines[i - 1].replace(' ou anterior', ''))) {
@@ -98,40 +109,15 @@ export default class Detail extends Crawler {
                 engineCylinderCapacity = lines[i - 1]
             } else if (line.trim().indexOf('Potência') >= 0) {
                 enginePower = lines[i - 1]
+            }  else if (line.trim().indexOf('Cor') >= 0) {
+                color = lines[i - 1]
             } 
         })
 
         
-        return { year, mileage, transmission, fuelType, brandDescription, modelDescription, location, locationState, engineCylinderCapacity, enginePower }
+        return { year, color, mileage, transmission, fuelType, brandDescription, modelDescription, location, locationState, engineCylinderCapacity, enginePower }
     }
-
-    getFuelSlug(fuelType: string): any {
-        if (fuelType.toLowerCase() == "gasolina") {
-            return 'gasoline'
-        } else if (fuelType.toLowerCase() == "diesel") {
-            return 'diesel'
-        } else if (fuelType.toLowerCase() == "eléctrico") {
-            return 'eletric'
-        } else if (fuelType.toLowerCase() == 'híbrido (diesel)') {
-            return 'hybrid-diesel'
-        } else if (fuelType.toLowerCase() == 'híbrido (gasolina)') {
-            return 'hybrid-gasoline'
-        } else {
-            return fuelType.toLowerCase()
-        }
-    }
-
-    getTransmission(value: string): any {
-        if (value == "Manual") {
-            return value.toLowerCase()
-        } else if (value == "Automática") {
-            return 'automatic'
-        }
-        return value.toLowerCase()
-    }
-
    
-
     private async accept() {
         // Click on cache
         Logger.info("Clicking on cache")

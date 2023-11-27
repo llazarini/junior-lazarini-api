@@ -63,25 +63,48 @@ export default class SimulatorController {
     public async crawler() {
         // 
         // Bull.add(new StandVirtualGetBrands().key, { getModels: true })
-        
         const extractionHash = uuidv4()
+        
+        if (true) {
+
+            const brands = await Brand
+                .query()
+                .orderBy('id', 'desc')
+                .limit(3)
+
+            const extraction = await Extraction.create({
+                extractionHash,
+                source: 'custo-justo',
+                status: 'processing',
+                extractionTotal: brands.length,
+            })
+    
+            brands.map(brand => Bull.add(new Crawler().key, { 
+                crawler: 'CustoJusto/Vehicles', 
+                extractionId: 
+                extraction.id, 
+                brandId: brand.id 
+            }))
+
+            return
+        }
+       
+        const brands = await Brand
+            .query()
+            .orderBy('id', 'desc')
+            .limit(10)
 
         const extraction = await Extraction.create({
             extractionHash,
-            source: 'custo-justo',
+            source: 'stand-virtual',
             status: 'processing',
-            extractionTotal: (await Brand.all()).length,
+            extractionTotal: brands.length,
         })
-
-        const brands = await Brand.query().limit(1)
         brands.map(brand => Bull.add(new Crawler().key, { 
-            crawler: 'CustoJusto/Vehicles', 
+            crawler: 'StandVirtual/Vehicles', 
             extractionId: 
             extraction.id, 
             brandId: brand.id 
         }))
-
-        //Bull.add(new GetCustoJustoVehicles().key, { extractionId: extraction.id, brandId: brands[3].id })
-        
     }
 }

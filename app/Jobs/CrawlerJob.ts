@@ -6,18 +6,15 @@ import StandVirtualBrands from "App/Crawler/StandVirtual/Brands";
 
 export default class CrawlerJob implements JobContract {
     public key = 'CrawlerJob'
-    public concurrency = 15;
+    public concurrency = 10;
 
     public async handle({ data }) {
         console.info(data.crawler)
-        // const crawler = new data.crawler()
-        //console.log(crawler)
-        //await crawler.handle(data)
-        // Dynamically import the module using the path
+        
         let crawler;
         if (data.crawler == 'CustoJusto/Vehicles') {
             crawler = new CustoJustoVehicles()
-        } else if (data.crawler == 'CustoJusto/Vehicles') {
+        } else if (data.crawler == 'CustoJusto/Detail') {
             crawler = new CustoJustoDetail()
         } else if (data.crawler == 'StandVirtual/Vehicles') {
             crawler = new StandVirtualVehicles()

@@ -33,6 +33,15 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     public interestedIn: string
 
     @column()
+    public state: string
+
+    @column()
+    public alreadyImported: boolean
+
+    @column()
+    public alreadySold: boolean
+
+    @column()
     public comments: string
 
     @column.dateTime({ autoCreate: true })

@@ -30,7 +30,7 @@ services:
   hub-chrome:
     #image: selenium/node-chrome:beta
     image: seleniarm/node-chromium:latest
-    shm_size: 1gb
+    shm_size: 2gb
     depends_on:
       - hub
     environment:

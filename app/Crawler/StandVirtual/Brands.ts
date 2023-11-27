@@ -11,9 +11,10 @@ export default class Brands extends Crawler {
     public concurrency = 1;
 
     public async handle(data) {
-        await this.loadDriver();
     
         try {
+            await this.loadDriver();
+            
             Logger.info(`Getting brands`)
 
             await this.driver.get(this.baseUrl);

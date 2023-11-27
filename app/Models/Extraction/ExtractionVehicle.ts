@@ -75,7 +75,13 @@ export default class ExtractionVehicle extends BaseModel {
     public enginePower: string
 
     @column()
+    public color: string
+
+    @column()
     public engineCylinderCapacity: string
+
+    @column.dateTime()
+    public removedDate: DateTime
 
     @column.dateTime({ autoCreate: true })
     public extractionDate: DateTime

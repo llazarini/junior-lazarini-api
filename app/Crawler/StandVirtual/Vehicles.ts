@@ -12,50 +12,55 @@ export default class Vehicles extends Crawler {
     public source = "stand-virtual"
     private baseUrl = "https://www.standvirtual.com"
 
-    public concurrency = 1;
-
     public async handle(data) {
-        await this.loadDriver();
-
         if (!data.brandId || !data.extractionId) {
             throw Error("The brand ID and extraction ID are needed.")
         }
+
         const brand = await Brand.find(data.brandId)
         const extraction = await Extraction.find(data.extractionId)
+
         if (!brand || !extraction) {
             throw Error("The brand or extraction was not found.")
         }
 
         try {
+            await this.loadDriver();
+
             Logger.info(`Getting models for ${brand.slug}`)
             await this.driver.get(`${this.baseUrl}/carros/${brand.slug}`);
             await this.accept()
 
-            const maxPagination = await this.findPagination()
-
-            for (let i = 1; i < +maxPagination + 1; i++) {
-                Logger.info(`Getting page ${i}`)
-                await this.loadDriver()
-                await this.getArticles(extraction, brand, i)
-                await this.driver.sleep(500)
-                await this.driver.close();
+            const brandInput = await this.driver.findElement(By.css('input[aria-label="Marca"]'))
+            if (await brandInput.getAttribute('placeholder') === 'Marca') {
+                throw new Error('Brand not selected. Probably this slug was not found.')
             }
 
-            extraction.extractionSucceeded += 1;
-            await extraction.save()
+            const maxPagination = await this.findPagination()
+            let ids: Array<number> = []
+            for (let i = 1; i < +maxPagination + 1; i++) {
+                Logger.info(`Getting page ${i}`)
+                ids = ids.concat(await this.getArticles(extraction, brand, i))
+            }
 
+            await ExtractionVehicle.query()
+                .whereNotIn('id', ids)
+                .where('brand_id', brand.id)
+                .where('source', this.source)
+                .whereNull('removed_date')
+                .update({
+                    removed_date: DateTime.now().toJSDate()
+                })
+
+            await this.updateSuccess(extraction.id)
             Logger.info("Extraction complete")
 
         } catch (exception) {
             console.error(exception)
+            await this.updateSuccess(extraction.id, false)
             throw new Error(exception)
         } finally {
-            try {
-                await this.driver.sleep(1000);
-                await this.driver.close();
-            } catch (exception) {
-                Logger.warn(`Session already terminated`)
-            }
+            await this.driver.quit();
         }
     }
 
@@ -75,6 +80,8 @@ export default class Vehicles extends Crawler {
         Logger.info(`Getting page ${this.baseUrl}/carros/${brand.slug}?page=${page}`)
         await this.driver.get(`${this.baseUrl}/carros/${brand.slug}?page=${page}`);
         const articles = await this.driver.findElements(By.css('div[data-testid="search-results"] article'))
+        const ids: Array<number> = []
+        
         for (let article of articles) {
             try {
                 const version = await article.findElement(By.css('h1')).getText()
@@ -87,13 +94,6 @@ export default class Vehicles extends Crawler {
                 const modelDescription = version.split(' ').length > 1 ? version.split(' ')[1] : ''
 
                 const { price, location, locationState, year, enginePower, engineCylinderCapacity } = this.parseVehicleText(await article.getText())
-
-                Logger.info(version)
-                Logger.info(link)
-                Logger.info(mileage)
-                Logger.info(transmission)
-                Logger.info(firstRegistrationYear)
-                Logger.info(fuelType)
 
                 const fuel = await Fuel.findBy('slug', this.getFuelSlug(fuelType))
                 
@@ -108,7 +108,7 @@ export default class Vehicles extends Crawler {
                     }
                 )
 
-                await ExtractionVehicle.updateOrCreate({
+                const extractionVehcile = await ExtractionVehicle.updateOrCreate({
                         link,
                     },
                     {
@@ -126,35 +126,26 @@ export default class Vehicles extends Crawler {
                         fuelType,
                         link,
                         firstRegistrationYear: +firstRegistrationYear,
-                        transmission,
+                        transmission: transmission === "Automática" ? 'automatic' : 'manual',
                         price, 
                         location, 
                         year, 
                         enginePower, 
                         engineCylinderCapacity,
-                        featuredImage
+                        featuredImage,
+                        removedDate: undefined,
+                        detailsExtractionComplete: true,
                     })
+
+                ids.push(extractionVehcile.id)
+
+                Logger.info(`Item ${extractionVehcile.$isNew ? "created" : "updated"} ${extractionVehcile.id}`)
             } catch (exception) {
                 Logger.warn(`Not possible to get or save car ${exception}`)
             }
+        }
          
-        }
-    }
-    
-    getFuelSlug(fuelType: string): any {
-        if (fuelType.toLowerCase() == "gasolina") {
-            return 'gasoline'
-        } else if (fuelType.toLowerCase() == "diesel") {
-            return 'diesel'
-        } else if (fuelType.toLowerCase() == "eléctrico") {
-            return 'eletric'
-        } else if (fuelType.toLowerCase() == 'híbrido (diesel)') {
-            return 'hybrid-diesel'
-        } else if (fuelType.toLowerCase() == 'híbrido (gasolina)') {
-            return 'hybrid-gasoline'
-        } else {
-            return fuelType.toLowerCase()
-        }
+        return ids;
     }
 
     parseVehicleText(text: string) {
