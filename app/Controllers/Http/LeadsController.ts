@@ -65,9 +65,14 @@ export default class LeadsController {
             })
         }
 
-        const title = lead.interestedIn === 'mentoring' ? "Mentoria de Importação de Carros" : (
-            lead.interestedIn === 'vehicle' ? `Interesse em ${lead.description}` : "E-book de Importação de Carros"
-        )
+        let title = "Atendimento Personalizado"
+        if (lead.interestedIn === 'mentoring') {
+            title = "Mentoria de Importação de Carros"
+        } else if (lead.interestedIn === 'vehicle') {
+            title = `Interesse em ${lead.description}`
+        } else if (lead.interestedIn === 'ebook') {
+            title = "E-book de Importação de Carros"
+        }
         
         // Envia o email para o lead
         await EmailService.send(lead.email, title, `emails/leads/${lead.interestedIn}`, lead)

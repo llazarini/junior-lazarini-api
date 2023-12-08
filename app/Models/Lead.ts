@@ -44,6 +44,15 @@ export default class Lead extends compose(BaseModel, SoftDeletes) {
     @column()
     public comments: string
 
+    @column()
+    public motivation: string
+
+    @column({ 
+        serialize: (value) => typeof value === 'string' ? JSON.parse(value) : value,
+		prepare: (value) => JSON.stringify(value),
+    })
+    public importFromCountryId: any
+
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime
 
